@@ -1,13 +1,11 @@
 // TODO: jól kellene dokumentálni
-// TODO: Az emojik nem jók
-// TODO: szebb üzenetek
+import chalk from 'chalk';
 import Definitions from './definitions/playwright.js';
 
-const SUCCESS_MESSAGE_STYLE = 'color:green;';
-const ERROR_MESSAGE_STYLE = 'color:red;';
-
-const getResultMessageType = (result) => {
-  return result ? SUCCESS_MESSAGE_STYLE : ERROR_MESSAGE_STYLE;
+const getResultMessage = (result, message) => {
+  return console.log(result ?
+    `✔ ${chalk.green(message)}` :
+    `❌ ${chalk.red(message)}`);
 };
 
 export function CREATE_BROWSER() {
@@ -56,39 +54,50 @@ export const ASSERT = {
     }
     result = result || elem1 === elem2;
 
-    console.log(`A két érték ${!result ? 'NEM' : ''} egyenlő!`, getResultMessageType(result));
+    getResultMessage(result, `A két érték ${!result ? 'NEM' : ''} egyenlő!`);
     return result;
   },
   TRUE: (item) => {
     console.log('👀 Ellenőrzés, hogy az érték IGAZ-e');
     const result = !!item;
-    console.log(`Az érték ${result ? '' : 'NEM'} IGAZ`, getResultMessageType(result));
+
+    getResultMessage(result, `Az érték ${result ? '' : 'NEM'} IGAZ`);
     return result;
   },
   FALSE: (item) => {
     console.log('👀 Ellenőrzés, hogy az érték HAMIS-e');
     const result = !item;
-    console.log(`Az érték ${result ? 'NEM' : ''} HAMIS`, getResultMessageType(!result));
+    getResultMessage(!result, `Az érték ${result ? 'NEM' : ''} HAMIS`);
     return !item;
   },
   EXISTS: (item) => {
     console.log('👀 Ellenőrzés, hogy az érték LÉTEZIK-e');
+    let result;
+
     if (Array.isArray(item)) {
-      return !!item.length;
+      result = !!item.length;
     }
     if (typeof item === 'object') {
-      return !!Object.keys(item).length;
+      result = !!Object.keys(item).length;
     }
     if (typeof item === 'string') {
-      return Definitions.ASSERT.EXISTS(item);
+      result = Definitions.ASSERT.EXISTS(item);
     }
+    getResultMessage(result, `Az érték ${result ? '' : 'NEM'} LÉTEZIK`);
+    return result;
   },
   HAS_ATTRIBUTE: (elem, attr) => {
     console.log('👀 Ellenőrzés, hogy az érték attribútuma LÉTEZIK-e');
-    return Definitions.ASSERT.HAS_ATTRIBUTE(elem, attr);
+    const result = Definitions.ASSERT.HAS_ATTRIBUTE(elem, attr);
+
+    getResultMessage(result, `Az érték attribútuma ${result ? '' : 'NEM'} LÉTEZIK`);
+    return result;
   },
   ATTRIBUTE_EQUALS: (elem, attr, value) => {
     console.log(`👀 Ellenőrzés, hogy az érték attribútuma EGYENLŐ-e ${value}-val`);
-    return Definitions.ASSERT.ATTRIBUTE_EQUALS(elem, attr, value);
+    const result =  Definitions.ASSERT.ATTRIBUTE_EQUALS(elem, attr, value);
+
+    getResultMessage(result, `Az érték ${result ? '' : 'NEM'} EGYENLŐ ${value}-val`);
+    return result;
   },
 };

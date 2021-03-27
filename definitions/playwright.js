@@ -7,14 +7,12 @@ let browserPromise;
 let pagePromise;
 
 function loadBrowser() {
-  console.log('browser');
   return browserPromise.then(
     (browser) => browser
   );
 }
 
 function loadPage() {
-  console.log('page');
   return loadBrowser().then(
     () => pagePromise.then(
       (page) => page
@@ -32,7 +30,7 @@ function loadElem(elem) {
 
 export default {
   CREATE_BROWSER: () => {
-    browserPromise = chromium.launch(/*{ headless: false }*/);
+    browserPromise = chromium.launch();
   },
   VISIT: (url) => {
     pagePromise = loadBrowser().then(
