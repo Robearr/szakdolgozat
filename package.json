@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "eslint": "^7.22.0",
+    "playwright": "^1.10.0"
+  },
+  "type": "module"
+}
