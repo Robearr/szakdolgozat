@@ -1,4 +1,4 @@
-import { ASSERT, CREATE_BROWSER, DISPATCH, GET, INPUT, VISIT, WAIT } from './frame.js';
+import { ASSERT, CREATE_BROWSER, CLOSE_BROWSER, DISPATCH, GET, INPUT, VISIT, WAIT } from './frame.js';
 
 CREATE_BROWSER();
 VISIT('localhost:5000');
@@ -35,4 +35,5 @@ VISIT('localhost:5000');
 
   console.log(await ASSERT.EXISTS('#vehicle1'));
 
+  await CLOSE_BROWSER();
 })();

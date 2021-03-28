@@ -12,6 +12,10 @@ export function CREATE_BROWSER() {
   Definitions.CREATE_BROWSER();
 }
 
+export function CLOSE_BROWSER() {
+  Definitions.CLOSE_BROWSER();
+}
+
 export function VISIT(url) {
   Definitions.VISIT(url);
 }

@@ -2,17 +2,26 @@ import { chromium } from 'playwright';
 import BrowserNotOpenedError from '../errors/BrowserNotOpenedError.js';
 import CantReachUrlError from '../errors/CantReachUrlError.js';
 import ElementNotFoundError from '../errors/ElementNotFoundError.js';
+import PageNotOpenedError from '../errors/PageNotOpenedError.js';
 
 let browserPromise;
 let pagePromise;
 
 function loadBrowser() {
+  if (!browserPromise) {
+    throw new BrowserNotOpenedError();
+  }
+
   return browserPromise.then(
     (browser) => browser
   );
 }
 
 function loadPage() {
+  if (!pagePromise) {
+    throw new PageNotOpenedError();
+  }
+
   return loadBrowser().then(
     () => pagePromise.then(
       (page) => page
@@ -32,12 +41,19 @@ export default {
   CREATE_BROWSER: () => {
     browserPromise = chromium.launch();
   },
+  CLOSE_BROWSER: () => {
+    loadBrowser().then(
+      () => browserPromise.then(
+        (browser) => browser.close()
+      )
+    );
+  },
   VISIT: (url) => {
     pagePromise = loadBrowser().then(
       (browser) => browser.newPage().then(
         (page) => page.goto(url).then(
           () => page
-        ).catch(() => { throw new CantReachUrlError(); })
+        )
       )
     );
   },
