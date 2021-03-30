@@ -1,11 +1,11 @@
 // TODO: jól kellene dokumentálni
-import chalk from 'chalk';
 import Definitions from './definitions/playwright.js';
+import TestFailedError from './errors/TestFailedError.js';
 
-const getResultMessage = (result, message) => {
-  return console.log(result ?
-    `✔ ${chalk.green(message)}` :
-    `❌ ${chalk.red(message)}`);
+const failTestIfShould = (result) => {
+  if (!result) {
+    throw new TestFailedError();
+  }
 };
 
 export function CREATE_BROWSER() {
@@ -58,23 +58,23 @@ export const ASSERT = {
     }
     result = result || elem1 === elem2;
 
-    getResultMessage(result, `A két érték ${!result ? 'NEM' : ''} egyenlő!`);
+    failTestIfShould(result);
     return result;
   },
   TRUE: (item) => {
     console.log('👀 Ellenőrzés, hogy az érték IGAZ-e');
     const result = !!item;
 
-    getResultMessage(result, `Az érték ${result ? '' : 'NEM'} IGAZ`);
+    failTestIfShould(result);
     return result;
   },
   FALSE: (item) => {
     console.log('👀 Ellenőrzés, hogy az érték HAMIS-e');
     const result = !item;
-    getResultMessage(!result, `Az érték ${result ? 'NEM' : ''} HAMIS`);
+    failTestIfShould(!result);
     return !item;
   },
-  EXISTS: (item) => {
+  EXISTS: async (item) => {
     console.log('👀 Ellenőrzés, hogy az érték LÉTEZIK-e');
     let result;
 
@@ -85,23 +85,40 @@ export const ASSERT = {
       result = !!Object.keys(item).length;
     }
     if (typeof item === 'string') {
-      result = Definitions.ASSERT.EXISTS(item);
+      result = await Definitions.ASSERT.EXISTS(item);
     }
-    getResultMessage(result, `Az érték ${result ? '' : 'NEM'} LÉTEZIK`);
+
+    failTestIfShould(result);
     return result;
   },
-  HAS_ATTRIBUTE: (elem, attr) => {
+  HAS_ATTRIBUTE: async (elem, attr) => {
     console.log('👀 Ellenőrzés, hogy az érték attribútuma LÉTEZIK-e');
-    const result = Definitions.ASSERT.HAS_ATTRIBUTE(elem, attr);
+    const result = await Definitions.ASSERT.HAS_ATTRIBUTE(elem, attr);
 
-    getResultMessage(result, `Az érték attribútuma ${result ? '' : 'NEM'} LÉTEZIK`);
+    failTestIfShould(result);
     return result;
   },
-  ATTRIBUTE_EQUALS: (elem, attr, value) => {
+  ATTRIBUTE_EQUALS: async (elem, attr, value) => {
     console.log(`👀 Ellenőrzés, hogy az érték attribútuma EGYENLŐ-e ${value}-val`);
-    const result =  Definitions.ASSERT.ATTRIBUTE_EQUALS(elem, attr, value);
+    const result =  await Definitions.ASSERT.ATTRIBUTE_EQUALS(elem, attr, value);
 
-    getResultMessage(result, `Az érték ${result ? '' : 'NEM'} EGYENLŐ ${value}-val`);
+    failTestIfShould(result);
     return result;
+  },
+  THROWS: (expression) => {
+    if (!expression) {
+      return false;
+    }
+
+    return Promise.resolve(expression).then(
+      () => {
+        return false;
+      }
+    ).catch(
+      () => {
+        failTestIfShould(true);
+        return true;
+      }
+    );
   },
 };

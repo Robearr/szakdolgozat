@@ -1,6 +1,5 @@
 import { chromium } from 'playwright';
 import BrowserNotOpenedError from '../errors/BrowserNotOpenedError.js';
-import CantReachUrlError from '../errors/CantReachUrlError.js';
 import ElementNotFoundError from '../errors/ElementNotFoundError.js';
 import PageNotOpenedError from '../errors/PageNotOpenedError.js';
 
