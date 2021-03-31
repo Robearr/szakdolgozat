@@ -1,6 +1,6 @@
-import chalk from 'chalk';
+const chalk = require('chalk');
 
-export default function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisible, isErrorDescriptionVisible, isStackVisible, points, callback) {
+function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisible, isErrorDescriptionVisible, isStackVisible, points, callback) {
 
   console.log(chalk.blueBright(`=== Teszt: ${name} ===`));
 
@@ -38,3 +38,5 @@ export default function Test(name, timeout, customErrorMessage, isCustomErrorMes
       });
   });
 }
+
+module.exports = Test;

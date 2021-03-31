@@ -1,7 +1,7 @@
-import { CLOSE_BROWSER, CREATE_BROWSER } from './frame.js';
-import Test from './models/Test.js';
-import vehicle1Check from './tests/vehicle1-check.js';
-import vehicle1IdExists from './tests/vehicle1-id-exists.js';
+const { CLOSE_BROWSER, CREATE_BROWSER } = require('./frame.js');
+const Test = require('./model-functions/Test.js');
+const vehicle1Check = require('./tests/vehicle1-check.js');
+const vehicle1IdExists = require('./tests/vehicle1-id-exists.js');
 
 const sum = (...vals) => vals.reduce((prev, cur) => prev + cur, 0);
 

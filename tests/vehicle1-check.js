@@ -1,6 +1,6 @@
-import { ASSERT, DISPATCH, GET, INPUT, VISIT } from '../frame.js';
+const { ASSERT, DISPATCH, GET, INPUT, VISIT } = require('../frame.js');
 
-export default async function() {
+module.exports = async function() {
   VISIT('localhost:5000');
 
   const vehicle1 = GET.ONE('#vehicle1');
@@ -8,4 +8,4 @@ export default async function() {
   await INPUT.CHECK(vehicle1);
   await DISPATCH(vehicle1, 'click');
   await ASSERT.ATTRIBUTE_EQUALS(vehicle1, 'name', 'vehicle1');
-}
+};

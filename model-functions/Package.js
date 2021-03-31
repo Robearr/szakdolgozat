@@ -1,6 +1,6 @@
-import chalk from 'chalk';
+const chalk = require('chalk');
 
-export default function Package(name, description, isActive, activity, needsAuth, ipMask, urlMask, timeout, tests, hooks) {
+function Package(name, description, isActive, activity, needsAuth, ipMask, urlMask, timeout, tests, hooks) {
 
   console.log(chalk.magentaBright(`=== Csomag: ${name} ===`));
 
@@ -17,3 +17,5 @@ export default function Package(name, description, isActive, activity, needsAuth
   );
 
 }
+
+module.exports = Package;

@@ -1,6 +1,6 @@
-import { ASSERT, VISIT } from '../frame.js';
+const { ASSERT, VISIT } = require('../frame.js');
 
-export default async function() {
+module.exports = async function() {
   VISIT('localhost:5000');
   await ASSERT.EXISTS('#vehicle1');
-}
+};

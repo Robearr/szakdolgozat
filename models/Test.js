@@ -1,40 +1,39 @@
-import chalk from 'chalk';
+import { Sequelize, DataTypes } from 'sequelize';
 
-export default function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisible, isErrorDescriptionVisible, isStackVisible, points, callback) {
+const sequelize = new Sequelize('sqlite://database.sqlite');
 
-  console.log(chalk.blueBright(`=== Teszt: ${name} ===`));
+const Test = sequelize.define('Test', {
 
-  return new Promise((resolve) => {
-    const timeoutId = setTimeout(() => {
-      console.log(chalk.red('‼ A teszt timeoutja lejárt ‼'));
-      //! TMP
-      process.exit(1);
-    }, timeout);
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  timeout: {
+    type: DataTypes.INTEGER,
+  },
+  customErrorMessage: {
+    type: DataTypes.STRING
+  },
+  isCustomErrorMessageVisible: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
+  isErrorDescriptionVisible: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
+  isStackVisible: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
+  points: {
+    type: DataTypes.INTEGER
+  },
+  callbackPath: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
 
-    callback().then(
-      () => {
-        clearTimeout(timeoutId);
-        console.log(`✔ ${chalk.green('Sikeresen lefutott a teszt!')}`);
-        // TODO: valahol tárolni kellene a pontokat
-        resolve(points);
-      }).catch(
-      (err) => {
-        if (isStackVisible) {
-          console.log(chalk.yellow('📢 Stack trace:'));
-          console.log(err.stack);
-        }
+});
 
-        if (isErrorDescriptionVisible) {
-          console.log(chalk.red.bold(err.message));
-        }
-
-        if (err.name === 'TestFailedError') {
-          if (isCustomErrorMessageVisible) {
-            clearTimeout(timeoutId);
-            console.log(`❌ ${chalk.red(customErrorMessage)}`);
-          }
-          resolve(0);
-        }
-      });
-  });
-}
+export default Test;

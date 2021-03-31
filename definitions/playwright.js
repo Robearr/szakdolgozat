@@ -1,7 +1,7 @@
-import { chromium } from 'playwright';
-import BrowserNotOpenedError from '../errors/BrowserNotOpenedError.js';
-import ElementNotFoundError from '../errors/ElementNotFoundError.js';
-import PageNotOpenedError from '../errors/PageNotOpenedError.js';
+const { chromium } = require('playwright');
+const BrowserNotOpenedError = require('../errors/BrowserNotOpenedError.js');
+const ElementNotFoundError = require('../errors/ElementNotFoundError.js');
+const PageNotOpenedError = require('../errors/PageNotOpenedError.js');
 
 let browserPromise;
 let pagePromise;
@@ -36,7 +36,7 @@ function loadElem(elem) {
   );
 }
 
-export default {
+module.exports = {
   CREATE_BROWSER: () => {
     browserPromise = chromium.launch();
   },

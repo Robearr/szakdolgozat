@@ -1,6 +1,6 @@
 // TODO: jól kellene dokumentálni
-import Definitions from './definitions/playwright.js';
-import TestFailedError from './errors/TestFailedError.js';
+const Definitions = require('./definitions/playwright.js');
+const TestFailedError = require('./errors/TestFailedError.js');
 
 const failTestIfShould = (result) => {
   if (!result) {
@@ -8,39 +8,39 @@ const failTestIfShould = (result) => {
   }
 };
 
-export function CREATE_BROWSER() {
+function CREATE_BROWSER() {
   Definitions.CREATE_BROWSER();
 }
 
-export function CLOSE_BROWSER() {
+function CLOSE_BROWSER() {
   Definitions.CLOSE_BROWSER();
 }
 
-export function VISIT(url) {
+function VISIT(url) {
   Definitions.VISIT(url);
 }
 
-export function WAIT(timeout) {
+function WAIT(timeout) {
   return Definitions.WAIT(timeout);
 }
 
-export const INPUT = {
+const INPUT = {
   SELECT: Definitions.INPUT.SELECT,
   CHECK: Definitions.INPUT.CHECK,
   WRITE: Definitions.INPUT.WRITE
 };
 
-export const GET = {
+const GET = {
   ONE: Definitions.GET.ONE,
   MANY: Definitions.GET.MANY,
   ATTRIBUTE: Definitions.GET.ATTRIBUTE,
 };
 
-export function DISPATCH(elem, ev) {
+function DISPATCH(elem, ev) {
   return Definitions.DISPATCH(elem, ev);
 }
 
-export const ASSERT = {
+const ASSERT = {
   EQUALS: (elem1, elem2) => {
     console.log('👀 Ellenőrzés hogy a két érték EGYENLŐ-e');
     let result;
@@ -121,4 +121,15 @@ export const ASSERT = {
       }
     );
   },
+};
+
+module.exports = {
+  CREATE_BROWSER,
+  CLOSE_BROWSER,
+  VISIT,
+  WAIT,
+  INPUT,
+  GET,
+  DISPATCH,
+  ASSERT,
 };
