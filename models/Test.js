@@ -1,6 +1,6 @@
-import { Sequelize, DataTypes } from 'sequelize';
+const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('sqlite://database.sqlite');
+const sequelize = new Sequelize('sqlite://database/database.sqlite');
 
 const Test = sequelize.define('Test', {
 
@@ -36,4 +36,4 @@ const Test = sequelize.define('Test', {
 
 });
 
-export default Test;
+module.exports = Test;
