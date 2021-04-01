@@ -10,6 +10,7 @@ module.exports = {
         isErrorDescriptionVisible: false,
         isStackVisible: false,
         points: 5,
+        packageId: 1,
         callbackPath: 'tests/vehicle1IdExists.js',
         createdAt: new Date()
       },
@@ -21,6 +22,7 @@ module.exports = {
         isErrorDescriptionVisible: false,
         isStackVisible: false,
         points: 5,
+        packageId: 1,
         callbackPath: 'tests/vehicle1Check.js',
         createdAt: new Date()
       }

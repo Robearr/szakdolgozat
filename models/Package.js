@@ -1,9 +1,9 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const Test = require('./Test.js');
+const Test = require('./Test');
 
-const sequelize = new Sequelize('sqlite://database/database.sqlite');
+const sequelize = new Sequelize('sqlite://database.sqlite');
 
-const Package = sequelize.define('Package', {
+const Package = sequelize.define('packages', {
 
   name: {
     type: DataTypes.STRING
@@ -38,8 +38,5 @@ const Package = sequelize.define('Package', {
   // },
 
 });
-
-Package.tests = Package.hasMany(Test);
-
 
 module.exports = Package;

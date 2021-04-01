@@ -1,5 +1,5 @@
 module.exports = {
-  up:  (queryInterface, Sequelize) => {
+  up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('packages', [{
       name: 'Szimpla tesztcsomag',
       description: 'Egy egyszerű tesztcsomag, ami pár alap tesztet tartalmaz magában, hogy a normális működést le tudjam ellenőrizni.',
@@ -10,11 +10,10 @@ module.exports = {
       ipMask: null,
       urlMask: null,
       timeout: null,
-      createdAt: new Date()
+      createdAt: new Date(),
       // hooks: {
 
       // },
-      // tests: [0, 1]
     }], {});
   },
 

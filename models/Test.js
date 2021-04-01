@@ -1,8 +1,9 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const Package = require('./Package');
 
-const sequelize = new Sequelize('sqlite://database/database.sqlite');
+const sequelize = new Sequelize('sqlite://database.sqlite');
 
-const Test = sequelize.define('Test', {
+const Test = sequelize.define('tests', {
 
   name: {
     type: DataTypes.STRING,
@@ -33,6 +34,10 @@ const Test = sequelize.define('Test', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  packageId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  }
 
 });
 

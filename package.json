@@ -12,6 +12,6 @@
     "sqlite3": "^5.0.2"
   },
   "scripts": {
-    "init-db": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed"
+    "init-db": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
   }
 }
