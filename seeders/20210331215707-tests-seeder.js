@@ -1,4 +1,3 @@
-//TODO ez még valamiért nem működik
 module.exports = {
   up:  (queryInterface, Sequelize) => {
 
@@ -25,7 +24,7 @@ module.exports = {
         callbackPath: 'tests/vehicle1Check.js',
         createdAt: new Date()
       }
-    ]);
+    ], {});
   },
 
   down:  (queryInterface, Sequelize) => {

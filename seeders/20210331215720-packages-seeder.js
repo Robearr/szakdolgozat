@@ -1,4 +1,3 @@
-//TODO ez még valamiért nem működik
 module.exports = {
   up:  (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('packages', [{
@@ -16,7 +15,7 @@ module.exports = {
 
       // },
       // tests: [0, 1]
-    }]);
+    }], {});
   },
 
   down: (queryInterface, Sequelize) => {
