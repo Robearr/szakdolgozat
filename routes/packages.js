@@ -50,6 +50,19 @@ router
       return;
     }
     res.sendStatus(200);
+  })
+  .delete('/', async (req, res) => {
+    try {
+      await Package.destroy({ where: { id: req.body.id}});
+    } catch(err) {
+      console.log(err);
+      res.send({
+        severity: 'ERROR',
+        messages: err.errors
+      });
+      return;
+    }
+    res.sendStatus(200);
   });
 
 module.exports = router;

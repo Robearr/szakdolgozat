@@ -41,6 +41,18 @@ router
       return;
     }
     res.sendStatus(200);
+  })
+  .delete('/', async (req, res) => {
+    try {
+      await Test.destroy({ where: { id: req.body.id}});
+    } catch(err) {
+      res.send({
+        severity: 'ERROR',
+        messages: err.errors
+      });
+      return;
+    }
+    res.sendStatus(200);
   });
 
 module.exports = router;
