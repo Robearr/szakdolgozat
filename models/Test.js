@@ -11,6 +11,9 @@ const Test = sequelize.define('tests', {
   },
   timeout: {
     type: DataTypes.INTEGER,
+    validate: {
+      isNumeric: true
+    }
   },
   customErrorMessage: {
     type: DataTypes.STRING
@@ -28,7 +31,10 @@ const Test = sequelize.define('tests', {
     defaultValue: true
   },
   points: {
-    type: DataTypes.INTEGER
+    type: DataTypes.INTEGER,
+    validate: {
+      isNumeric: true
+    }
   },
   callbackPath: {
     type: DataTypes.STRING,
@@ -36,7 +42,10 @@ const Test = sequelize.define('tests', {
   },
   packageId: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      isNumeric: true
+    }
   }
 
 });

@@ -1,5 +1,4 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const Test = require('./Test');
 
 const sequelize = new Sequelize('sqlite://database.sqlite');
 
@@ -12,16 +11,24 @@ const Package = sequelize.define('packages', {
     type: DataTypes.STRING
   },
   isActive: {
-    type: DataTypes.BOOLEAN
+    type: DataTypes.BOOLEAN,
+    defaultValue: 0,
+    validate: {
+      isIn: [[0, 1, true, false]]
+    }
   },
   availableFrom: {
-    type: DataTypes.DATE
+    type: DataTypes.DATE,
+    defaultValue: Date.now()
   },
   availableTo: {
     type: DataTypes.DATE
   },
   needsAuth: {
-    type: DataTypes.BOOLEAN
+    type: DataTypes.BOOLEAN,
+    validate: {
+      isIn: [[0, 1, true, false]]
+    }
   },
   ipMask: {
     type: DataTypes.STRING
@@ -30,7 +37,10 @@ const Package = sequelize.define('packages', {
     type: DataTypes.STRING
   },
   timeout: {
-    type: DataTypes.INTEGER
+    type: DataTypes.INTEGER,
+    validate: {
+      isNumeric: true
+    }
   },
 
   // hooks: {
