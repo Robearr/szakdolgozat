@@ -1,6 +1,7 @@
 const chalk = require('chalk');
+const { VISIT } = require('../frame');
 
-function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisible, isErrorDescriptionVisible, isStackVisible, points, callback) {
+function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisible, isErrorDescriptionVisible, isStackVisible, points, callback, url) {
 
   console.log(chalk.blueBright(`=== Teszt: ${name} ===`));
 
@@ -10,6 +11,8 @@ function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisible, is
       //! TMP
       // process.exit(1);
     }, timeout);
+
+    VISIT(url);
 
     callback().then(
       () => {

@@ -6,6 +6,8 @@ const packagesRouter = require('./routes/packages');
 
 const app = express();
 
+app.use(express.json());
+
 app.use('/tests', testsRouter);
 app.use('/packages', packagesRouter);
 

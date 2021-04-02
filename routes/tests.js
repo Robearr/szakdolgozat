@@ -13,9 +13,9 @@ router
     const test = await Test.findOne({ where: { id: req.params.id}});
     res.send(test);
   })
-  .get('/:id/run', async (req, res) => {
+  .post('/:id/run', async (req, res) => {
     const test = await Test.findOne({ where: { id: req.params.id }});
-    await runner([test]);
+    await runner([test], req.body.url);
     res.sendStatus(200);
   });
 
