@@ -38,6 +38,18 @@ router
     const tests = await Test.findAll({ where: { packageId: req.params.id}});
     await runner(tests, req.body.url);
     res.sendStatus(200);
+  })
+  .put('/', async (req, res) => {
+    try {
+      await Package.update(req.body, { where: { id: req.body.id } });
+    } catch(err) {
+      res.send({
+        severity: 'ERROR',
+        messages: err.errors
+      });
+      return;
+    }
+    res.sendStatus(200);
   });
 
 module.exports = router;

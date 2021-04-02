@@ -29,6 +29,18 @@ router
     const test = await Test.findOne({ where: { id: req.params.id }});
     await runner([test], req.body.url);
     res.sendStatus(200);
+  })
+  .put('/', async (req, res) => {
+    try {
+      await Test.update(req.body, { where: { id: req.body.id } });
+    } catch(err) {
+      res.send({
+        severity: 'ERROR',
+        messages: err.errors
+      });
+      return;
+    }
+    res.sendStatus(200);
   });
 
 module.exports = router;
