@@ -16,8 +16,8 @@ function CLOSE_BROWSER() {
   Definitions.CLOSE_BROWSER();
 }
 
-function VISIT(url) {
-  Definitions.VISIT(url);
+async function VISIT(url) {
+  return Definitions.VISIT(url);
 }
 
 function WAIT(timeout) {

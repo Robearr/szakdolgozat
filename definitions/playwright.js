@@ -2,6 +2,7 @@ const { chromium } = require('playwright');
 const BrowserNotOpenedError = require('../errors/BrowserNotOpenedError.js');
 const ElementNotFoundError = require('../errors/ElementNotFoundError.js');
 const PageNotOpenedError = require('../errors/PageNotOpenedError.js');
+const CantReachUrlError = require('../errors/CantReachUrlError.js');
 
 let browserPromise;
 let pagePromise;
@@ -52,7 +53,7 @@ module.exports = {
       (browser) => browser.newPage().then(
         (page) => page.goto(url).then(
           () => page
-        )
+        ).catch(() => { throw new CantReachUrlError(); })
       )
     );
   },

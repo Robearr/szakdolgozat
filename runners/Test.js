@@ -1,9 +1,9 @@
 const chalk = require('chalk');
 const { VISIT } = require('../frame');
 
-function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisible, isErrorDescriptionVisible, isStackVisible, points, callback, url) {
+async function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisible, isErrorDescriptionVisible, isStackVisible, points, callback, url) {
 
-  console.log(chalk.blueBright(`=== Teszt: ${name} ===`));
+  await VISIT(url);
 
   return new Promise((resolve) => {
     const timeoutId = setTimeout(() => {
@@ -12,7 +12,7 @@ function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisible, is
       // process.exit(1);
     }, timeout);
 
-    VISIT(url);
+    // VISIT(url);
 
     callback().then(
       () => {
