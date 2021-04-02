@@ -22,6 +22,18 @@ router
     const test = await Test.findOne({ where: { packageId: req.params.id, id: req.params.testId }});
     res.send(test);
   })
+  .post('/', async (req, res) => {
+    try {
+      await Package.create(req.body);
+    } catch(err) {
+      res.send({
+        severity: 'ERROR',
+        messages: err.errors
+      });
+      return;
+    }
+    res.sendStatus(200);
+  })
   .post('/:id/run', async (req, res) => {
     const tests = await Test.findAll({ where: { packageId: req.params.id}});
     await runner(tests, req.body.url);

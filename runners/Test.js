@@ -12,8 +12,6 @@ async function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisib
       // process.exit(1);
     }, timeout);
 
-    // VISIT(url);
-
     callback().then(
       () => {
         clearTimeout(timeoutId);
