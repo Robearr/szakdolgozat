@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const Test = require('../models/Test');
+const runner = require('../runner');
 
 router
   .get('/', async (req, res) => {
@@ -14,10 +15,8 @@ router
   })
   .get('/:id/run', async (req, res) => {
     const test = await Test.findOne({ where: { id: req.params.id }});
-    const callbackPath = test.callbackPath;
-    const callback = require(`${__dirname}/../${callbackPath}`);
-    // TODO: a callback meghívására fusson le a teszt
-    res.send('ok');
+    await runner([test]);
+    res.sendStatus(200);
   });
 
 module.exports = router;

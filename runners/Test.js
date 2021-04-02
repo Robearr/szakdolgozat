@@ -8,7 +8,7 @@ function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisible, is
     const timeoutId = setTimeout(() => {
       console.log(chalk.red('‼ A teszt timeoutja lejárt ‼'));
       //! TMP
-      process.exit(1);
+      // process.exit(1);
     }, timeout);
 
     callback().then(

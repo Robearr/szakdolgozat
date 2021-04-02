@@ -3,6 +3,7 @@ const router = express.Router();
 
 const Package = require('../models/Package');
 const Test = require('../models/Test');
+const runner = require('../runner');
 
 router
   .get('/', async (req, res) => {
@@ -20,6 +21,11 @@ router
   .get('/:id/tests/:testId', async (req, res) => {
     const test = await Test.findOne({ where: { packageId: req.params.id, id: req.params.testId }});
     res.send(test);
+  })
+  .get('/:id/run', async (req, res) => {
+    const tests = await Test.findAll({ where: { packageId: req.params.id}});
+    await runner(tests);
+    res.sendStatus(200);
   });
 
 module.exports = router;
