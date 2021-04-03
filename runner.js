@@ -5,7 +5,7 @@ const TestRunner = require('./runners/Test');
 module.exports = async (tests, url) => {
   CREATE_BROWSER();
 
-  await Promise.all(tests.map(
+  const results = await Promise.all(tests.map(
     async (test) => {
       const { name, timeout, customErrorMessage, isCustomErrorMessageVisible, isErrorDescriptionVisible, isStackVisible, points, callbackPath } = test;
       const callback = require(`${__dirname}/${callbackPath}`);
@@ -14,4 +14,6 @@ module.exports = async (tests, url) => {
   ));
 
   CLOSE_BROWSER();
+
+  return results;
 };

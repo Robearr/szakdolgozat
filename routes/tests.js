@@ -27,8 +27,8 @@ router
   })
   .post('/:id/run', async (req, res) => {
     const test = await Test.findOne({ where: { id: req.params.id }});
-    await runner([test], req.body.url);
-    res.sendStatus(200);
+    const results = await runner([test], req.body.url);
+    res.send(results);
   })
   .put('/', async (req, res) => {
     try {

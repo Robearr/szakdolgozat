@@ -17,25 +17,32 @@ async function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisib
         clearTimeout(timeoutId);
         console.log(`✔ ${chalk.green('Sikeresen lefutott a teszt!')}`);
         // TODO: valahol tárolni kellene a pontokat
-        resolve(points);
+        resolve({ points });
       }).catch(
       (err) => {
+        const result = {};
         if (isStackVisible) {
           console.log(chalk.yellow('📢 Stack trace:'));
           console.log(err.stack);
+          result.stack = err.stack;
         }
 
         if (isErrorDescriptionVisible) {
           console.log(chalk.red.bold(err.message));
+          result.errorDescription = err.message;
         }
 
         if (err.name === 'TestFailedError') {
           if (isCustomErrorMessageVisible) {
             clearTimeout(timeoutId);
             console.log(`❌ ${chalk.red(customErrorMessage)}`);
+            result.customErrorMessage = customErrorMessage;
           }
-          resolve(0);
         }
+        resolve({
+          ...result,
+          points: 0
+        });
       });
   });
 }

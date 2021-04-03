@@ -36,8 +36,8 @@ router
   })
   .post('/:id/run', async (req, res) => {
     const tests = await Test.findAll({ where: { packageId: req.params.id}});
-    await runner(tests, req.body.url);
-    res.sendStatus(200);
+    const results = await runner(tests, req.body.url);
+    res.send(results);
   })
   .put('/', async (req, res) => {
     try {
