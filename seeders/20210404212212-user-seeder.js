@@ -4,12 +4,14 @@ module.exports = {
       {
         name: 'admin',
         password: '21232f297a57a5a743894a0e4a801fc3',
-        isAdmin: true
+        isAdmin: true,
+        createdAt: new Date()
       },
       {
         name: 'test',
         password: 'ee11cbb19052e40b07aac0ca060c23ee',
-        isAdmin: false
+        isAdmin: false,
+        createdAt: new Date()
       }
     ], {});
   },

@@ -4,6 +4,8 @@ const router = express.Router();
 const Test = require('../models/Test');
 const runner = require('../runner');
 
+const jwtMiddleware = require('express-jwt');
+
 router
   .get('/', async (req, res) => {
     const tests = await Test.findAll();
@@ -13,7 +15,7 @@ router
     const test = await Test.findOne({ where: { id: req.params.id}});
     res.send(test);
   })
-  .post('/', async (req, res) => {
+  .post('/', jwtMiddleware({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] }), async (req, res) => {
     try {
       await Test.create(req.body);
     } catch(err) {
@@ -30,7 +32,7 @@ router
     const results = await runner([test], req.body.url);
     res.send(results);
   })
-  .put('/', async (req, res) => {
+  .put('/', jwtMiddleware({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] }), async (req, res) => {
     try {
       await Test.update(req.body, { where: { id: req.body.id } });
     } catch(err) {
@@ -42,7 +44,7 @@ router
     }
     res.sendStatus(200);
   })
-  .delete('/', async (req, res) => {
+  .delete('/', jwtMiddleware({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] }), async (req, res) => {
     try {
       await Test.destroy({ where: { id: req.body.id}});
     } catch(err) {

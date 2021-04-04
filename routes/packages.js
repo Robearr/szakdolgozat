@@ -1,9 +1,14 @@
+const dotenv = require('dotenv');
 const express = require('express');
 const router = express.Router();
 
 const Package = require('../models/Package');
 const Test = require('../models/Test');
 const runner = require('../runner');
+
+const jwtMiddleware = require('express-jwt');
+
+dotenv.config();
 
 router
   .get('/', async (req, res) => {
@@ -22,7 +27,7 @@ router
     const test = await Test.findOne({ where: { packageId: req.params.id, id: req.params.testId }});
     res.send(test);
   })
-  .post('/', async (req, res) => {
+  .post('/', jwtMiddleware({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] }), async (req, res) => {
     try {
       await Package.create(req.body);
     } catch(err) {
@@ -39,7 +44,7 @@ router
     const results = await runner(tests, req.body.url);
     res.send(results);
   })
-  .put('/', async (req, res) => {
+  .put('/', jwtMiddleware({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] }), async (req, res) => {
     try {
       await Package.update(req.body, { where: { id: req.body.id } });
     } catch(err) {
@@ -51,7 +56,7 @@ router
     }
     res.sendStatus(200);
   })
-  .delete('/', async (req, res) => {
+  .delete('/', jwtMiddleware({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] }), async (req, res) => {
     try {
       await Package.destroy({ where: { id: req.body.id}});
     } catch(err) {
