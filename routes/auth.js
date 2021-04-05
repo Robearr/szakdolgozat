@@ -1,7 +1,6 @@
 const { createHash } = require('crypto');
 const jwt = require('jsonwebtoken');
 
-const md5 = createHash('md5');
 const express = require('express');
 const router = express.Router();
 
@@ -13,6 +12,7 @@ router
     // TODO: nem jó felhasználónév hiba
     // TODO: nem jó jelszó hiba
 
+    const md5 = createHash('md5');
     const hashedPassword = md5.update(req.body.password).digest('hex');
 
     if (hashedPassword === user?.password) {
