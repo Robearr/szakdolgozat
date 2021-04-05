@@ -10,6 +10,7 @@ dotenv.config();
 
 const jwt = require('express-jwt');
 const jwtMiddleware = jwt({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] });
+const jsonwebtoken = require('jsonwebtoken');
 
 router
   .get('/', async (req, res) => {
@@ -49,6 +50,21 @@ router
     res.sendStatus(200);
   })
   .post('/:id/run', async (req, res) => {
+    const pckg = await Package.findOne({ where: { id: req.params.id }});
+    let jsonwt;
+    try {
+      jsonwt = jsonwebtoken.verify(req.headers?.authorization?.split(' ')[1], process.env.JWT_SECRET);
+    } catch(err) {
+      //TODO
+      console.log('valami hiba volt');
+    }
+    if (pckg?.needsAuth && !jsonwt) {
+      res.send({
+        severity: 'ERROR',
+        messages: ['A csomag futtatásához be kell lépni!']
+      });
+      return;
+    }
     const tests = await Test.findAll({ where: { packageId: req.params.id}});
     const results = await runner(tests, req.body.url);
     res.send(results);
