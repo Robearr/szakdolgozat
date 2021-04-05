@@ -51,6 +51,7 @@ router
   })
   .post('/:id/run', async (req, res) => {
     const pckg = await Package.findOne({ where: { id: req.params.id }});
+    // auth check
     let jsonwt;
     try {
       jsonwt = jsonwebtoken.verify(req.headers?.authorization?.split(' ')[1], process.env.JWT_SECRET);
@@ -65,6 +66,29 @@ router
       });
       return;
     }
+
+    // ip mask check
+    if (pckg?.ipMask) {
+      if (!new RegExp(pckg.ipMask).test(req.ip)) {
+        res.send({
+          severity: 'ERROR',
+          messages: ['Az IP cím nem illeszkedik az eltárolt sémára!']
+        });
+        return;
+      }
+    }
+
+    // url mask check
+    if (pckg?.urlMask) {
+      if (!new RegExp(pckg.urlMask).test(req.hostname)) {
+        res.send({
+          severity: 'ERROR',
+          messages: ['Az URL nem illeszkedik az eltárolt sémára!']
+        });
+        return;
+      }
+    }
+
     const tests = await Test.findAll({ where: { packageId: req.params.id}});
     const results = await runner(tests, req.body.url);
     res.send(results);
