@@ -11,6 +11,7 @@ dotenv.config();
 const jwt = require('express-jwt');
 const jwtMiddleware = jwt({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] });
 const jsonwebtoken = require('jsonwebtoken');
+const dayjs = require('dayjs');
 
 router
   .get('/', async (req, res) => {
@@ -51,6 +52,17 @@ router
   })
   .post('/:id/run', async (req, res) => {
     const pckg = await Package.findOne({ where: { id: req.params.id }});
+
+    // time check
+    if ((pckg?.availableFrom && pckg?.availableTo) &&
+      (dayjs().isAfter(dayjs(pckg.availableTo)) || dayjs().isBefore(dayjs(pckg.availableFrom)))) {
+      res.send({
+        severity: 'ERROR',
+        messages: ['A megadott idősávon kívül nem lehet futtatni a csomagot!']
+      });
+      return;
+    }
+
     // auth check
     let jsonwt;
     try {
