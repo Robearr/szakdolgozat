@@ -41,12 +41,7 @@ const Package = sequelize.define('packages', {
     validate: {
       isNumeric: true
     }
-  },
-
-  // hooks: {
-  //
-  // },
-
+  }
 });
 
 module.exports = Package;

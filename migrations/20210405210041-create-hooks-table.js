@@ -1,22 +1,23 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('users', {
+    return queryInterface.createTable('hooks', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true
       },
-      name: {
+      type: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      password: {
+      callbackPath: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      isAdmin: {
-        type: Sequelize.BOOLEAN
+      packageId: {
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -30,6 +31,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('users');
+    return queryInterface.dropTable('hooks');
   }
 };

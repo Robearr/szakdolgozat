@@ -11,9 +11,6 @@ module.exports = {
       urlMask: null,
       timeout: null,
       createdAt: new Date(),
-      // hooks: {
-
-      // },
     }], {});
   },
 
