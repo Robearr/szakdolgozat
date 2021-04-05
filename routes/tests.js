@@ -1,10 +1,14 @@
+const dotenv = require('dotenv');
 const express = require('express');
 const router = express.Router();
 
 const Test = require('../models/Test');
 const runner = require('../runner');
 
-const jwtMiddleware = require('express-jwt');
+dotenv.config();
+
+const jwt = require('express-jwt');
+const jwtMiddleware = jwt({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] });
 
 router
   .get('/', async (req, res) => {
@@ -15,7 +19,15 @@ router
     const test = await Test.findOne({ where: { id: req.params.id}});
     res.send(test);
   })
-  .post('/', jwtMiddleware({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] }), async (req, res) => {
+  .post('/', jwtMiddleware, async (req, res) => {
+    if (!req.user.isAdmin) {
+      res.send({
+        severity: 'ERROR',
+        messages: ['Csak admin tud tesztet létrehozni!']
+      });
+      return;
+    }
+
     try {
       await Test.create(req.body);
     } catch(err) {
@@ -32,7 +44,15 @@ router
     const results = await runner([test], req.body.url);
     res.send(results);
   })
-  .put('/', jwtMiddleware({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] }), async (req, res) => {
+  .put('/', jwtMiddleware, async (req, res) => {
+    if (!req.user.isAdmin) {
+      res.send({
+        severity: 'ERROR',
+        messages: ['Csak admin tud tesztet módosítani!']
+      });
+      return;
+    }
+
     try {
       await Test.update(req.body, { where: { id: req.body.id } });
     } catch(err) {
@@ -44,7 +64,15 @@ router
     }
     res.sendStatus(200);
   })
-  .delete('/', jwtMiddleware({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] }), async (req, res) => {
+  .delete('/', jwtMiddleware, async (req, res) => {
+    if (!req.user.isAdmin) {
+      res.send({
+        severity: 'ERROR',
+        messages: ['Csak admin tud tesztet törölni!']
+      });
+      return;
+    }
+
     try {
       await Test.destroy({ where: { id: req.body.id}});
     } catch(err) {
