@@ -8,15 +8,17 @@ async function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisib
   return new Promise((resolve) => {
     const timeoutId = setTimeout(() => {
       console.log(chalk.red('‼ A teszt timeoutja lejárt ‼'));
-      //! TMP
-      // process.exit(1);
+      resolve({
+        severity: 'WARNING',
+        messages: ['A teszt timeoutja lejárt!']
+      });
+      return;
     }, timeout);
 
     callback().then(
       () => {
         clearTimeout(timeoutId);
         console.log(`✔ ${chalk.green('Sikeresen lefutott a teszt!')}`);
-        // TODO: valahol tárolni kellene a pontokat
         resolve({ points });
       }).catch(
       (err) => {

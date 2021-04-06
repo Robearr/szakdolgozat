@@ -2,7 +2,7 @@ const { CLOSE_BROWSER, CREATE_BROWSER } = require('./frame.js');
 
 const TestRunner = require('./runners/Test');
 
-module.exports = async (tests, url, hooks) => {
+module.exports = async (tests, url, hooks = []) => {
   const callAppropriateHooks = (type) => {
     hooks.forEach(async (hook) => {
       if (hook.type === type) {

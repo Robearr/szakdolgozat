@@ -66,11 +66,18 @@ router
 
     // auth check
     let jsonwt;
+    const clientJwt = req.headers?.authorization?.split(' ')[1];
     try {
-      jsonwt = jsonwebtoken.verify(req.headers?.authorization?.split(' ')[1], process.env.JWT_SECRET);
+      jsonwt = jsonwebtoken.verify(clientJwt, process.env.JWT_SECRET);
     } catch(err) {
-      //TODO
-      console.log('valami hiba volt');
+      // ne küldjük el a `jwt must be provided` hibát, hiszen nem kell auth a futtatáshoz
+      if (clientJwt) {
+        res.send({
+          severity: 'ERROR',
+          messages: [err.message]
+        });
+        return;
+      }
     }
     if (pckg?.needsAuth && !jsonwt) {
       res.send({
@@ -102,8 +109,16 @@ router
       }
     }
 
-    const tests = await Test.findAll({ where: { packageId: req.params.id}});
+    const packageTests = await Test.findAll({ where: { packageId: req.params.id}});
     const hooks = await Hook.findAll({ where: { packageId: req.params.id }});
+    let tests = packageTests;
+
+    if (req.body.tests) {
+      tests = packageTests.filter(
+        (packageTest) => req.body.tests.includes(packageTest.id)
+      );
+    }
+
     const results = await runner(tests, req.body.url, hooks);
     res.send(results);
   })

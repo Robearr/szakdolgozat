@@ -9,8 +9,13 @@ const User = require('../models/User');
 router
   .post('/login', async (req, res) => {
     const user = await User.findOne({ where: { name: req.body.name } });
-    // TODO: nem jó felhasználónév hiba
-    // TODO: nem jó jelszó hiba
+    if (!user) {
+      res.send({
+        severity: 'ERROR',
+        messages: ['Nincs ilyen felhasználó!']
+      });
+      return;
+    }
 
     const md5 = createHash('md5');
     const hashedPassword = md5.update(req.body.password).digest('hex');
@@ -20,6 +25,12 @@ router
       req.session.token = token;
       req.session.user = user;
       res.send(token);
+      return;
+    } else {
+      res.send({
+        severity: 'ERROR',
+        messages: ['Nem megfelelő a jelszó!']
+      });
       return;
     }
   });
