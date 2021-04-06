@@ -1,5 +1,4 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const Package = require('./Package');
 
 const sequelize = new Sequelize('sqlite://database.sqlite');
 
