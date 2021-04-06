@@ -4,6 +4,7 @@ const router = express.Router();
 
 const Package = require('../models/Package');
 const Test = require('../models/Test');
+const Hook = require('../models/Hook');
 const runner = require('../runner');
 
 dotenv.config();
@@ -102,7 +103,8 @@ router
     }
 
     const tests = await Test.findAll({ where: { packageId: req.params.id}});
-    const results = await runner(tests, req.body.url);
+    const hooks = await Hook.findAll({ where: { packageId: req.params.id }});
+    const results = await runner(tests, req.body.url, hooks);
     res.send(results);
   })
   .put('/', jwtMiddleware, async (req, res) => {

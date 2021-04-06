@@ -1,1 +1,3 @@
-console.log('A csomag után futottam le 🎆');
+module.exports = function() {
+  console.log('A csomag után futottam le 🎆');
+};

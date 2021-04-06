@@ -1,1 +1,3 @@
-console.log('A teszt előtt futottam le 🎆');
+module.exports = function() {
+  console.log('A teszt előtt futottam le 🎆');
+};
