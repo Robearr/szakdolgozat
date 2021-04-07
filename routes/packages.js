@@ -13,6 +13,7 @@ const jwt = require('express-jwt');
 const jwtMiddleware = jwt({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] });
 const jsonwebtoken = require('jsonwebtoken');
 const dayjs = require('dayjs');
+const Statistic = require('../models/Statistic');
 
 router
   .get('/', async (req, res) => {
@@ -153,6 +154,22 @@ router
     }
 
     const results = await runner(tests, req.body.url, hooks);
+
+    // statisztika beállítása
+    const points = results.reduce((prev, cur) => prev += cur.points, 0);
+
+    if (jsonwt?.id) {
+      const statistic = await Statistic.findOne({ where: { userId: jsonwt.id, packageId: req.params.id } });
+      if (points > statistic.result) {
+        await Statistic.update({ result: points }, { where: { userId: jsonwt.id, packageId: req.params.id } });
+      }
+    } else {
+      await Statistic.create({
+        result: points,
+        packageId: req.params.id
+      });
+    }
+
     res.send(results);
   })
   .put('/', jwtMiddleware, async (req, res) => {
