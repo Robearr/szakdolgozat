@@ -3,9 +3,11 @@ const BrowserNotOpenedError = require('../errors/BrowserNotOpenedError.js');
 const ElementNotFoundError = require('../errors/ElementNotFoundError.js');
 const PageNotOpenedError = require('../errors/PageNotOpenedError.js');
 const CantReachUrlError = require('../errors/CantReachUrlError.js');
+const TestFailedError = require('../errors/TestFailedError.js');
 
 let browserPromise;
 let pagePromise;
+let remaining;
 
 function loadBrowser() {
   if (!browserPromise) {
@@ -62,6 +64,25 @@ module.exports = {
       return new Promise((resolve) => setTimeout(() => resolve(), timeout));
     }
   },
+  WATCH_CONSOLE: (messagesToWatch) => {
+    remaining = messagesToWatch;
+    return loadPage().then(
+      (p) => p.addListener('console', (msg) => {
+        if (remaining.includes(msg.text())) {
+          remaining.splice(remaining.findIndex((r) => r === msg.text()), 1);
+        }
+      })
+    );
+  },
+  END_WATCH_CONSOLE: () => {
+    return loadPage().then(
+      () => {
+        if (remaining.length) {
+          throw new TestFailedError();
+        }
+      }
+    );
+  },
   INPUT: {
     SELECT: (elem, value) => {
       return loadElem(elem).then(
@@ -89,6 +110,18 @@ module.exports = {
         (el) => el.fill(value)
       );
     },
+    SET_VALUE: (elem, value) => {
+      if (typeof elem === 'string') {
+        return loadPage().then(
+          (p) => p.$eval(elem, (el, value) => el.value = value, value)
+        );
+      }
+      return loadElem(elem).then(
+        (el) => el.evaluate(
+          (node, value) => node.value = value, value
+        )
+      );
+    }
   },
   DISPATCH: (elem, ev) => {
     return loadElem(elem).then(

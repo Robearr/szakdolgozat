@@ -40,6 +40,25 @@ function WAIT(timeout) {
   return Definitions.WAIT(timeout);
 }
 
+/**
+ * Feliratkozik a console-ba történő írás eseményekre, és a kapott üzenet tömb-ből kiszedegeti az eddig console-ra írt üzeneteket.
+ * A teszt sikeres, ha a tömb az END_WATCH_CONSOLE hívás során üres.
+ * @param  {string[]} messagesToWatch - Egy tömbnyi üzenet, aminek a jelenlétét figyeli.
+ * @returns {Promise}
+ */
+function WATCH_CONSOLE(messagesToWatch) {
+  return Definitions.WATCH_CONSOLE(messagesToWatch);
+}
+
+/**
+ * Eldönti, hogy sikeres volt-e a WATCH_CONSOLE teszt.
+ * @throws TestFailedError
+ * @returns {Promise}
+ */
+function END_WATCH_CONSOLE() {
+  return Definitions.END_WATCH_CONSOLE();
+}
+
 const INPUT = {
   /**
    * Egy legördülő listából kiválasztja a megadott opciót
@@ -58,11 +77,20 @@ const INPUT = {
   CHECK: Definitions.INPUT.CHECK,
   /**
    * A megadott input tag-be beleírja a szintén megadott értéket
+   * A SET_VALUE generikusabb! Ez csak text inputra működik!
    * @param {Element} elem - Az input tag
    * @param {string} value - A beírandó érték
    * @returns {Promise} - megvárandó beírás
    */
-  WRITE: Definitions.INPUT.WRITE
+  WRITE: Definitions.INPUT.WRITE,
+
+  /**
+   * Egy sokkal generikusabb WRITE, ami minden `value` attribútummal rendelkező tag-re működik.
+   * @param {string|Element} elem - Az elem, aminek az `value` attribútumát szeretnénk beállítani, vagy a selector, ami ezt az elemet jelöli.
+   * @param {any} value - az érték, amire be szeretnénk állítani
+   * @returns {Promise} - megvárandó beírás
+   */
+  SET_VALUE: Definitions.INPUT.SET_VALUE
 };
 
 const GET = {
@@ -109,8 +137,14 @@ const ASSERT = {
   EQUALS: (elem1, elem2) => {
     console.log('👀 Ellenőrzés hogy a két érték EGYENLŐ-e');
     let result;
-    if (Array.isArray(elem1) && Array.isArray(elem2)) {
-      result = elem2.every((item) => elem1.includes(item));
+    if (Array.isArray(elem1)) {
+      if (Array.isArray(elem2)) {
+        result = elem2.every((item) => elem1.includes(item));
+      } else {
+        result = elem1.every((item) => item === elem2);
+      }
+    } else if (Array.isArray(elem2)) {
+      result = elem2.every((item) => item === elem1);
     } else if (typeof elem1 === 'object' && typeof elem2 === 'object') {
       result = Object.keys(elem1).every(
         (item) => Object.keys(elem2).includes(item) && elem1[item] === elem2[item]
@@ -242,6 +276,8 @@ module.exports = {
   CLOSE_BROWSER,
   VISIT,
   WAIT,
+  WATCH_CONSOLE,
+  END_WATCH_CONSOLE,
   INPUT,
   GET,
   DISPATCH,
