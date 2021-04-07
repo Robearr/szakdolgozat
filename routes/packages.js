@@ -158,16 +158,18 @@ router
     // statisztika beállítása
     const points = results.reduce((prev, cur) => prev += cur.points, 0);
 
-    if (jsonwt?.id) {
-      const statistic = await Statistic.findOne({ where: { userId: jsonwt.id, packageId: req.params.id } });
-      if (points > statistic.result) {
-        await Statistic.update({ result: points }, { where: { userId: jsonwt.id, packageId: req.params.id } });
+    if (!req.body.tests) {
+      if (jsonwt?.id) {
+        const statistic = await Statistic.findOne({ where: { userId: jsonwt.id, packageId: req.params.id } });
+        if (points > statistic.result) {
+          await Statistic.update({ result: points }, { where: { userId: jsonwt.id, packageId: req.params.id } });
+        }
+      } else {
+        await Statistic.create({
+          result: points,
+          packageId: req.params.id
+        });
       }
-    } else {
-      await Statistic.create({
-        result: points,
-        packageId: req.params.id
-      });
     }
 
     res.send(results);
