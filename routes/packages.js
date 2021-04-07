@@ -23,6 +23,30 @@ router
     const pckg = await Package.findOne({ where: { id: req.params.id }});
     res.send(pckg);
   })
+  .get('/:id/activate', jwtMiddleware, async (req, res) => {
+    if (!req.user.isTeacher) {
+      res.send({
+        severity: 'ERROR',
+        messages: ['Csak oktató tud csomagot aktiválni!']
+      });
+      return;
+    }
+
+    await Package.update({ isActive: true }, { where: { id: req.params.id } });
+    res.sendStatus(200);
+  })
+  .get('/:id/deactivate', jwtMiddleware, async (req, res) => {
+    if (!req.user.isTeacher) {
+      res.send({
+        severity: 'ERROR',
+        messages: ['Csak oktató tud csomagot deaktiválni!']
+      });
+      return;
+    }
+
+    await Package.update({ isActive: false }, { where: { id: req.params.id } });
+    res.sendStatus(200);
+  })
   .get('/:id/tests', async (req, res) => {
     const tests = await Test.findAll({ where: { packageId: req.params.id }});
     res.send(tests);
@@ -54,11 +78,20 @@ router
   .post('/:id/run', async (req, res) => {
     const pckg = await Package.findOne({ where: { id: req.params.id }});
 
+    // activation check
+    if (!pckg?.isActive) {
+      res.send({
+        severity: 'WARNING',
+        messages: ['A csomag nincsen aktiválva!']
+      });
+      return;
+    }
+
     // time check
     if ((pckg?.availableFrom && pckg?.availableTo) &&
       (dayjs().isAfter(dayjs(pckg.availableTo)) || dayjs().isBefore(dayjs(pckg.availableFrom)))) {
       res.send({
-        severity: 'ERROR',
+        severity: 'WARNING',
         messages: ['A megadott idősávon kívül nem lehet futtatni a csomagot!']
       });
       return;
