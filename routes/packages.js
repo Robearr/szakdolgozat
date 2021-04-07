@@ -14,6 +14,8 @@ const jwtMiddleware = jwt({ secret: process.env.JWT_SECRET, algorithms: ['HS256'
 const jsonwebtoken = require('jsonwebtoken');
 const dayjs = require('dayjs');
 const Statistic = require('../models/Statistic');
+const getAuthentication = require('../utils/getAuthentication');
+const createOrUpdateStatistic = require('../utils/createOrUpdateStatistic');
 
 router
   .get('/', async (req, res) => {
@@ -99,20 +101,8 @@ router
     }
 
     // auth check
-    let jsonwt;
-    const clientJwt = req.headers?.authorization?.split(' ')[1];
-    try {
-      jsonwt = jsonwebtoken.verify(clientJwt, process.env.JWT_SECRET);
-    } catch(err) {
-      // ne küldjük el a `jwt must be provided` hibát, hiszen nem kell auth a futtatáshoz
-      if (clientJwt) {
-        res.send({
-          severity: 'ERROR',
-          messages: [err.message]
-        });
-        return;
-      }
-    }
+    const jsonwt = getAuthentication(req, res);
+
     if (pckg?.needsAuth && !jsonwt) {
       res.send({
         severity: 'ERROR',
@@ -156,20 +146,15 @@ router
     const results = await runner(tests, req.body.url, hooks);
 
     // statisztika beállítása
-    const points = results.reduce((prev, cur) => prev += cur.points, 0);
 
     if (!req.body.tests) {
-      if (jsonwt?.id) {
-        const statistic = await Statistic.findOne({ where: { userId: jsonwt.id, packageId: req.params.id } });
-        if (points > statistic.result) {
-          await Statistic.update({ result: points }, { where: { userId: jsonwt.id, packageId: req.params.id } });
+      createOrUpdateStatistic(jsonwt, results, { packageId: req.params.id });
+    } else {
+      req.body.tests.forEach(
+        (test, i) => {
+          createOrUpdateStatistic(jsonwt, [results[i]], { testId: test });
         }
-      } else {
-        await Statistic.create({
-          result: points,
-          packageId: req.params.id
-        });
-      }
+      );
     }
 
     res.send(results);

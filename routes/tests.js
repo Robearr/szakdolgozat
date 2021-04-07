@@ -8,6 +8,8 @@ const runner = require('../runner');
 dotenv.config();
 
 const jwt = require('express-jwt');
+const getAuthentication = require('../utils/getAuthentication');
+const createOrUpdateStatistic = require('../utils/createOrUpdateStatistic');
 const jwtMiddleware = jwt({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] });
 
 router
@@ -42,6 +44,11 @@ router
   .post('/:id/run', async (req, res) => {
     const test = await Test.findOne({ where: { id: req.params.id }});
     const results = await runner([test], req.body.url);
+
+    const jsonwt = getAuthentication(req, res);
+
+    createOrUpdateStatistic(jsonwt, results, req, { testId: req.params.id });
+
     res.send(results);
   })
   .put('/', jwtMiddleware, async (req, res) => {

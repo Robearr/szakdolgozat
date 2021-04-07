@@ -20,9 +20,16 @@ module.exports = {
           isNumeric: true
         }
       },
+      testId: {
+        type: Sequelize.INTEGER,
+        allowNull: !this.packageId,
+        validate: {
+          isNumeric: true
+        }
+      },
       packageId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: !this.testId,
         validate: {
           isNumeric: true
         }

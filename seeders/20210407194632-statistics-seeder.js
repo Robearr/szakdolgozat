@@ -14,6 +14,15 @@ module.exports = {
       {
         result: 15,
         packageId: 1
+      },
+      {
+        result: 3,
+        testId: 1
+      },
+      {
+        result: 3,
+        userId: 1,
+        testId: 1
       }
     ], {});
   },

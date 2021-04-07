@@ -130,6 +130,17 @@ _Erre is van példa a **tests** táblában és **tests/** mappában._
     "url": "localhost:5000"
   }
   ```
+
+  A kérésben opcionálisan megadható a `tests` tömb is. Ha ez szerepel a kérésben, akkor csak az ebben felsorolt tesztek fognak lefutni.
+
+  Példa kérés:
+  ```json
+  {
+    "url": "localhost:5000",
+    "tests": [1, 2, 3]
+  }
+  ```
+
 - `PUT /`
 
   Tesztcsomag módosítására szolgáló végpont.
@@ -231,3 +242,18 @@ _Erre is van példa a **tests** táblában és **tests/** mappában._
     "id": 8,
   }
   ```
+## Statisztikák
+
+Egy statisztika csak akkor kerül elmentésre, ha nincsen belépve felhasználó, vagy ha be van lépve, és jobb eredményt ért el, mint a korábban elmentett (a semminél csak jobb van).
+
+- `GET /`
+
+  Az összes statisztika lekérdezésére szolgáló végpont.
+
+- `GET /packages/{packageId}`
+
+  Az adott packageId-hoz tartozó statisztikák lekérdezésére szolgáló végpont.
+
+- `GET /users/{userId}`
+
+  Az adott userId-hoz tartozó statisztikák lekérdezésére szolgáló végpont.

@@ -16,9 +16,16 @@ const Statistic = sequelize.define('statistics', {
       isNumeric: true
     }
   },
+  testId: {
+    type: DataTypes.INTEGER,
+    allowNull: !this.packageId,
+    validate: {
+      isNumeric: true,
+    }
+  },
   packageId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: !this.testId,
     validate: {
       isNumeric: true
     }
