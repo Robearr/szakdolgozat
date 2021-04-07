@@ -8,10 +8,11 @@ module.exports = function (req, res) {
   } catch (err) {
     // ne küldjük el a `jwt must be provided` hibát, hiszen nem kell auth a futtatáshoz
     if (clientJwt) {
-      res.send({
-        severity: 'ERROR',
-        messages: [err.message],
-      });
+      // TODO lejárt tokent jelezni kellene?
+      // res.send({
+      //   severity: 'ERROR',
+      //   messages: [err.message],
+      // });
       return;
     }
   }

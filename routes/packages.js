@@ -11,9 +11,7 @@ dotenv.config();
 
 const jwt = require('express-jwt');
 const jwtMiddleware = jwt({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] });
-const jsonwebtoken = require('jsonwebtoken');
 const dayjs = require('dayjs');
-const Statistic = require('../models/Statistic');
 const getAuthentication = require('../utils/getAuthentication');
 const createOrUpdateStatistic = require('../utils/createOrUpdateStatistic');
 
