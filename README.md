@@ -4,7 +4,8 @@ Ez a webalkalmazás Node.js segítségével készült. Az entry pointja a `serve
   - `nodemon server.js` (ez csak fejlesztéshez ajánlott)
 Elindulás után a **.env** fileban megadott, vagy ha az hiányzik, akkor a **3000**-es porton válik elérhetővé az alkalmazás.
 
-Indítás előtt érdemes az `npm run init-db` parancsot futtatni. Ez el fogja készíteni az adatbázishoz szükséges táblákat, a hozzá tartozó oszlopokkal és a megfelelő validációkkal. Ezt követően feltölti mindet **dummy adatokkal**.
+Indítás előtt kötelező az `npm install` parancsot és érdemes az `npm run init-db` parancsot futtatni.
+ Az előbbi telepíti a szükséges modulokat, amik nélkül nem működik az alkalmazás, az utóbbi pedig el fogja készíteni az adatbázishoz szükséges táblákat, a hozzá tartozó oszlopokkal és a megfelelő validációkkal. Ezt követően feltölti mindet **dummy adatokkal**.
 Ha az adatfeltöltést _(seedelés)_ elhagyható, viszont a táblák létrehozásához _(migráció)_ szükséges lesz futtatni a következő parancsot: `npx sequelize-cli db:migrate`.
 
 **Vigyázat!**
