@@ -20,10 +20,10 @@ router
     res.send(test);
   })
   .post('/', jwtMiddleware, async (req, res) => {
-    if (!req.user.isAdmin) {
+    if (!req.user.isTeacher) {
       res.send({
         severity: 'ERROR',
-        messages: ['Csak admin tud tesztet létrehozni!']
+        messages: ['Csak oktató tud tesztet létrehozni!']
       });
       return;
     }
@@ -45,10 +45,10 @@ router
     res.send(results);
   })
   .put('/', jwtMiddleware, async (req, res) => {
-    if (!req.user.isAdmin) {
+    if (!req.user.isTeacher) {
       res.send({
         severity: 'ERROR',
-        messages: ['Csak admin tud tesztet módosítani!']
+        messages: ['Csak oktató tud tesztet módosítani!']
       });
       return;
     }
@@ -65,10 +65,10 @@ router
     res.sendStatus(200);
   })
   .delete('/', jwtMiddleware, async (req, res) => {
-    if (!req.user.isAdmin) {
+    if (!req.user.isTeacher) {
       res.send({
         severity: 'ERROR',
-        messages: ['Csak admin tud tesztet törölni!']
+        messages: ['Csak oktató tud tesztet törölni!']
       });
       return;
     }

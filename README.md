@@ -104,7 +104,7 @@ _Erre is van példa a **tests** táblában és **tests/** mappában._
 
   Authentikáció szükséges: `Authorization: Bearer {JWT}`
 
-  Csak admin számára elérhető!
+  Csak oktató számára elérhető!
 
   Példa kérés:
   ```json
@@ -136,7 +136,7 @@ _Erre is van példa a **tests** táblában és **tests/** mappában._
 
   Authentikáció szükséges: `Authorization: Bearer {JWT}`
 
-  Csak admin számára elérhető!
+  Csak oktató számára elérhető!
 
   Példa kérés:
   ```json
@@ -153,7 +153,7 @@ _Erre is van példa a **tests** táblában és **tests/** mappában._
 
   Authentikáció szükséges: `Authorization: Bearer {JWT}`
 
-  Csak admin számára elérhető!
+  Csak oktató számára elérhető!
 
   Példa kérés:
   ```json
@@ -175,7 +175,7 @@ _Erre is van példa a **tests** táblában és **tests/** mappában._
 
   Authentikáció szükséges: `Authorization: Bearer {JWT}`
 
-  Csak admin számára elérhető!
+  Csak oktató számára elérhető!
 
   Példa kérés:
   ```json
@@ -207,7 +207,7 @@ _Erre is van példa a **tests** táblában és **tests/** mappában._
 
   Authentikáció szükséges: `Authorization: Bearer {JWT}`
 
-  Csak admin számára elérhető!
+  Csak oktató számára elérhető!
 
   Példa kérés:
   ```json
@@ -223,7 +223,7 @@ _Erre is van példa a **tests** táblában és **tests/** mappában._
 
   Authentikáció szükséges: `Authorization: Bearer {JWT}`
 
-  Csak admin számára elérhető!
+  Csak oktató számára elérhető!
 
   Példa kérés:
   ```json

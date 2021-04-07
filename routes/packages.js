@@ -32,10 +32,10 @@ router
     res.send(test);
   })
   .post('/', jwtMiddleware, async (req, res) => {
-    if (!req.user.isAdmin) {
+    if (!req.user.isTeacher) {
       res.send({
         severity: 'ERROR',
-        messages: ['Csak admin tud csomagot létrehozni!']
+        messages: ['Csak oktató tud csomagot létrehozni!']
       });
       return;
     }
@@ -123,10 +123,10 @@ router
     res.send(results);
   })
   .put('/', jwtMiddleware, async (req, res) => {
-    if (!req.user.isAdmin) {
+    if (!req.user.isTeacher) {
       res.send({
         severity: 'ERROR',
-        messages: ['Csak admin tud csomagot módosítani!']
+        messages: ['Csak oktató tud csomagot módosítani!']
       });
       return;
     }
@@ -143,10 +143,10 @@ router
     res.sendStatus(200);
   })
   .delete('/', jwtMiddleware, async (req, res) => {
-    if (!req.user.isAdmin) {
+    if (!req.user.isTeacher) {
       res.send({
         severity: 'ERROR',
-        messages: ['Csak admin tud csomagot törölni!']
+        messages: ['Csak oktató tud csomagot törölni!']
       });
       return;
     }

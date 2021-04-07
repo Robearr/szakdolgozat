@@ -15,8 +15,9 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      isAdmin: {
-        type: Sequelize.BOOLEAN
+      isTeacher: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       createdAt: {
         type: Sequelize.DATE,
