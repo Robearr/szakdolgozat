@@ -109,18 +109,14 @@ const ASSERT = {
   EQUALS: (elem1, elem2) => {
     console.log('👀 Ellenőrzés hogy a két érték EGYENLŐ-e');
     let result;
-    if (Array.isArray(elem1)) {
-      if (Array.isArray(elem2)) {
-        result = elem2.every((item) => elem1.includes(item));
-      }
-    } else if (typeof elem1 === 'object') {
-      if (typeof elem2 === 'object') {
-        result = Object.keys(elem1).every(
-          (item) => Object.keys(elem2).includes(item) && elem1[item] === elem2[item]
-        );
-      }
-
+    if (Array.isArray(elem1) && Array.isArray(elem2)) {
+      result = elem2.every((item) => elem1.includes(item));
+    } else if (typeof elem1 === 'object' && typeof elem2 === 'object') {
+      result = Object.keys(elem1).every(
+        (item) => Object.keys(elem2).includes(item) && elem1[item] === elem2[item]
+      );
     }
+
     result = result || elem1 === elem2;
 
     failTestIfShould(result);
@@ -228,6 +224,17 @@ const ASSERT = {
       }
     );
   },
+  /**
+   * A megadott függvényt megkeresi név alapján, és a paraméterekkel végrehajtja, majd ellenőrzi, hogy egyenlő-e a megadott eredménnyel.
+   * @param {any} result - a függvény eredménye, amivel egyenlőnek kell lennie
+   * @param {string} functionName - a függvény neve
+   * @param {...any} parameters - a függvény paraméterei
+   */
+  FUNCTION_RETURNS: async (result, functionName, ...parameters) => {
+    console.log(`👀 Ellenőrzés, hogy a ${functionName}(${parameters}) EGYENLŐ-e ${result}-val`);
+    const functionResult = await Definitions.ASSERT.FUNCTION_RETURNS(functionName, ...parameters);
+    return ASSERT.EQUALS(result, functionResult);
+  }
 };
 
 module.exports = {

@@ -12,7 +12,6 @@ module.exports = {
         points: 5,
         packageId: 1,
         callbackPath: 'tests/vehicle1IdExists.js',
-        createdAt: new Date()
       },
       {
         name: 'vehicle 1 check',
@@ -24,7 +23,17 @@ module.exports = {
         points: 5,
         packageId: 1,
         callbackPath: 'tests/vehicle1Check.js',
-        createdAt: new Date()
+      },
+      {
+        name: 'function check',
+        timeout: 10000,
+        customErrorMessage: 'Ennek nem kéne megjelennie!',
+        isCustomErrorMessageVisible: false,
+        isErrorDescriptionVisible: false,
+        isStackVisible: false,
+        points: 3,
+        packageId: 1,
+        callbackPath: 'tests/functionCheck.js',
       }
     ], {});
   },

@@ -115,9 +115,6 @@ module.exports = {
     }
   },
   ASSERT: {
-    EQUALS: () => {},
-    TRUE: () => {},
-    FALSE: () => {},
     EXISTS: (selector) => {
       return loadPage().then(
         (page) => page.$(selector).then(
@@ -137,6 +134,22 @@ module.exports = {
         (el) => el.getAttribute(attr).then(
           (attribute) => attribute === value
         )
+      );
+    },
+    FUNCTION_RETURNS: (functionName, ...parameters) => {
+      const paramStrings = parameters.map(
+        (param) => {
+          // ez itt egy kis hack. string-re kell konvertálni a paramétereket, hogy injektálni lehessen
+          if (Array.isArray(param) || param && typeof param === 'object') {
+            return JSON.stringify(param);
+          }
+          return param;
+        }
+      );
+
+      const functionString = `${functionName}(${paramStrings.join(',')})`;
+      return loadPage().then(
+        (page) => page.evaluate(functionString)
       );
     }
   }
