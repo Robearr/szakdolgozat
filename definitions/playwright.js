@@ -131,19 +131,25 @@ module.exports = {
   GET: {
     ONE: (selector) => {
       return loadPage().then(
-        (page) => page.$(selector)
-      ).catch(() => { throw new ElementNotFoundError(); });
+        (page) => page.$(selector).catch(() => { throw new ElementNotFoundError(); })
+      );
     },
     MANY: (selector) => {
       return loadPage().then(
-        (page) => page.$$(selector)
-      ).catch(() => { throw new ElementNotFoundError(); });
+        (page) => page.$$(selector).catch(() => { throw new ElementNotFoundError(); })
+      );
     },
     ATTRIBUTE: (elem, attribute) => {
-      return loadElem(elem).then(
-        (el) => el.getProperty(attribute).then(
-          (property) => property.jsonValue()
-        )
+      if (elem.then) {
+        return loadElem(elem).then(
+          (el) => el.getProperty(attribute).then(
+            (property) => property.jsonValue()
+          )
+        );
+      }
+
+      return elem.getProperty(attribute).then(
+        (property) => property.jsonValue()
       );
     }
   },

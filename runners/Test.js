@@ -22,6 +22,7 @@ async function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisib
         resolve({ points });
       }).catch(
       (err) => {
+        clearTimeout(timeoutId);
         const result = {};
         if (isStackVisible) {
           console.log(chalk.yellow('📢 Stack trace:'));
@@ -36,7 +37,6 @@ async function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisib
 
         if (err.name === 'TestFailedError') {
           if (isCustomErrorMessageVisible) {
-            clearTimeout(timeoutId);
             console.log(`❌ ${chalk.red(customErrorMessage)}`);
             result.customErrorMessage = customErrorMessage;
           }
