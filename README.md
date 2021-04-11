@@ -6,13 +6,13 @@ Elindulás után a **.env** fileban megadott, vagy ha az hiányzik, akkor a **30
 
 Indítás előtt kötelező az `npm install` parancsot és érdemes az `npm run init-db` parancsot futtatni.
  Az előbbi telepíti a szükséges modulokat, amik nélkül nem működik az alkalmazás, az utóbbi pedig el fogja készíteni az adatbázishoz szükséges táblákat, a hozzá tartozó oszlopokkal és a megfelelő validációkkal. Ezt követően feltölti mindet **dummy adatokkal**.
-Ha az adatfeltöltést _(seedelés)_ elhagyható, viszont a táblák létrehozásához _(migráció)_ szükséges lesz futtatni a következő parancsot: `npx sequelize-cli db:migrate`.
+Az adatfeltöltés _(seedelés)_ elhagyható, viszont a táblákat létre kell hozni _(migráció)_, a megfelelő működés érdekében. A migrációk a következő paranncsal fognak lefutni: `npx sequelize-cli db:migrate`
 
 **Vigyázat!**
 
-Seedelés nélkül felhasználók sem fognak generálódni, így némelyik végpont elérhetetlenné válik!
+Seedelés nélkül felhasználók sem fognak generálódni, így **némelyik végpont elérhetetlenné válik!**
 
-# Definició
+# Definíció
 Az alkalmazás egyik jelentős része, a definíciók változtathasága. Maga a webalkalmazás egy keret, amin keresztül lehetséges teszteket futtatni. Maga a tesztelő még csak `playwright`-ban van megírva a `definitions/playwright.js`-ben, de bármilyen **headless browsert** lehetséges definiálni.
 
 Új definíció létrehozásakor a `frame.js`-ben deklarált függvényeket kell felüldefiniálni. Ezeket érdemes generikusan megírni, és a **headless browser hibáit helyben dobni**, a `definitions/playwright.js`-ben található módon. Az itt dobott saját hibák elkapódnak.
