@@ -10,6 +10,7 @@ dotenv.config();
 const jwt = require('express-jwt');
 const getAuthentication = require('../utils/getAuthentication');
 const createOrUpdateStatistic = require('../utils/createOrUpdateStatistic');
+const Package = require('../models/Package');
 const jwtMiddleware = jwt({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] });
 
 router
@@ -22,10 +23,22 @@ router
     res.send(test);
   })
   .post('/', jwtMiddleware, async (req, res) => {
+    const errorMessages = [];
     if (!req.user.isTeacher) {
+      errorMessages.push('Csak oktató tud tesztet létrehozni!');
+    }
+
+    const packages = await Package.findAll();
+    const packageIds = packages.map((pckg) => pckg.id);
+
+    if (!packageIds.includes(req.body.packageId)) {
+      errorMessages.push('Nem létezik ilyen csomag!');
+    }
+
+    if (errorMessages.length) {
       res.send({
         severity: 'ERROR',
-        messages: ['Csak oktató tud tesztet létrehozni!']
+        messages: errorMessages
       });
       return;
     }

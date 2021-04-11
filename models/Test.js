@@ -1,4 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const Package = require('./Package');
 
 const sequelize = new Sequelize('sqlite://database.sqlite');
 
@@ -11,7 +12,8 @@ const Test = sequelize.define('tests', {
   timeout: {
     type: DataTypes.INTEGER,
     validate: {
-      isNumeric: true
+      isNumeric: true,
+      min: 0
     }
   },
   customErrorMessage: {
@@ -31,8 +33,10 @@ const Test = sequelize.define('tests', {
   },
   points: {
     type: DataTypes.INTEGER,
+    allowNull: false,
     validate: {
-      isNumeric: true
+      isNumeric: true,
+      min: 0
     }
   },
   callbackPath: {

@@ -5,7 +5,8 @@ const sequelize = new Sequelize('sqlite://database.sqlite');
 const Package = sequelize.define('packages', {
 
   name: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    allowNull: false
   },
   description: {
     type: DataTypes.STRING
@@ -39,7 +40,8 @@ const Package = sequelize.define('packages', {
   timeout: {
     type: DataTypes.INTEGER,
     validate: {
-      isNumeric: true
+      isNumeric: true,
+      min: 0
     }
   }
 });

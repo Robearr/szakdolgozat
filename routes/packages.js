@@ -57,10 +57,20 @@ router
     res.send(test);
   })
   .post('/', jwtMiddleware, async (req, res) => {
+    const errorMessages = [];
+
+    if (dayjs(req.body.availableFrom).isAfter(req.body.availableTo)) {
+      errorMessages.push('Az availableFrom csak az availableTo előtt lehet!');
+    }
+
     if (!req.user.isTeacher) {
+      errorMessages.push('Csak oktató tud csomagot létrehozni!');
+    }
+
+    if (errorMessages.length) {
       res.send({
         severity: 'ERROR',
-        messages: ['Csak oktató tud csomagot létrehozni!']
+        messages: errorMessages
       });
       return;
     }
@@ -78,57 +88,46 @@ router
   })
   .post('/:id/run', async (req, res) => {
     const pckg = await Package.findOne({ where: { id: req.params.id }});
+    const errorMessages = [];
 
     // activation check
     if (!pckg?.isActive) {
-      res.send({
-        severity: 'WARNING',
-        messages: ['A csomag nincsen aktiválva!']
-      });
-      return;
+      errorMessages.push('A csomag nincsen aktiválva!');
     }
 
     // time check
     if ((pckg?.availableFrom && pckg?.availableTo) &&
       (dayjs().isAfter(dayjs(pckg.availableTo)) || dayjs().isBefore(dayjs(pckg.availableFrom)))) {
-      res.send({
-        severity: 'WARNING',
-        messages: ['A megadott idősávon kívül nem lehet futtatni a csomagot!']
-      });
-      return;
+      errorMessages.push('A megadott idősávon kívül nem lehet futtatni a csomagot!');
     }
 
     // auth check
     const jsonwt = getAuthentication(req, res);
 
     if (pckg?.needsAuth && !jsonwt) {
-      res.send({
-        severity: 'ERROR',
-        messages: ['A csomag futtatásához be kell lépni!']
-      });
-      return;
+      errorMessages.push('A csomag futtatásához be kell lépni!');
     }
 
     // ip mask check
     if (pckg?.ipMask) {
       if (!new RegExp(pckg.ipMask).test(req.ip)) {
-        res.send({
-          severity: 'ERROR',
-          messages: ['Az IP cím nem illeszkedik az eltárolt sémára!']
-        });
-        return;
+        errorMessages.push('Az IP cím nem illeszkedik az eltárolt sémára!');
       }
     }
 
     // url mask check
     if (pckg?.urlMask) {
       if (!new RegExp(pckg.urlMask).test(req.hostname)) {
-        res.send({
-          severity: 'ERROR',
-          messages: ['Az URL nem illeszkedik az eltárolt sémára!']
-        });
-        return;
+        errorMessages.push('Az URL nem illeszkedik az eltárolt sémára!');
       }
+    }
+
+    if (errorMessages.length) {
+      res.send({
+        severity: 'ERROR',
+        messages: errorMessages
+      });
+      return;
     }
 
     const packageTests = await Test.findAll({ where: { packageId: req.params.id}});

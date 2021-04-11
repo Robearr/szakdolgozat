@@ -30,7 +30,8 @@ module.exports = {
         defaultValue: true
       },
       points: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       callbackPath: {
         type: Sequelize.STRING,
