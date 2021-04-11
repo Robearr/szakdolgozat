@@ -26,8 +26,9 @@ function CLOSE_BROWSER() {
 /**
  * Meglátogatja a POST body-ban kapott url-t
  * @param {string} url - A meglátogatandó url
+ * @returns {Promise} - A pagePromise, ami a megnyitott oldalt tartalmazza
  */
-async function VISIT(url) {
+function VISIT(url) {
   return Definitions.VISIT(url);
 }
 
@@ -137,8 +138,8 @@ const ASSERT = {
   EQUALS: (elem1, elem2) => {
     console.log('👀 Ellenőrzés hogy a két érték EGYENLŐ-e');
     let result;
-    if (Array.isArray(elem1)) {
-      if (Array.isArray(elem2)) {
+    if (Array.isArray(elem1) && elem1.length) {
+      if (Array.isArray(elem2) && elem2.length) {
         result = elem2.every((item) => elem1.includes(item));
       } else {
         result = elem1.every((item) => item === elem2);

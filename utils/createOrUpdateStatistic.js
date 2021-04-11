@@ -1,6 +1,12 @@
 const Statistic = require('../models/Statistic');
 
 module.exports = async function(jsonwt, results, testOrPackageId) {
+
+  // ha valami hiba történt, ne mentsük el a próbát
+  if (results[0]?.severity === 'ERROR') {
+    return;
+  }
+
   const points = results.reduce((prev, cur) => prev += cur.points, 0);
 
   if (jsonwt?.id) {

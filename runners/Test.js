@@ -3,7 +3,14 @@ const { VISIT } = require('../frame');
 
 async function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisible, isErrorDescriptionVisible, isStackVisible, points, callback, url) {
 
-  await VISIT(url);
+  try {
+    await VISIT(url);
+  } catch(err) {
+    return {
+      severity: 'ERROR',
+      messages: [err.message]
+    };
+  }
 
   return new Promise((resolve) => {
     const timeoutId = setTimeout(() => {
@@ -12,7 +19,6 @@ async function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisib
         severity: 'WARNING',
         messages: ['A teszt timeoutja lejárt!']
       });
-      return;
     }, timeout);
 
     callback().then(
@@ -22,6 +28,7 @@ async function Test(name, timeout, customErrorMessage, isCustomErrorMessageVisib
         resolve({ points });
       }).catch(
       (err) => {
+        console.log(`Hiba dobódott: ${err.name}`);
         clearTimeout(timeoutId);
         const result = {};
         if (isStackVisible) {

@@ -1,6 +1,5 @@
 const { chromium } = require('playwright');
 const BrowserNotOpenedError = require('../errors/BrowserNotOpenedError.js');
-const ElementNotFoundError = require('../errors/ElementNotFoundError.js');
 const PageNotOpenedError = require('../errors/PageNotOpenedError.js');
 const CantReachUrlError = require('../errors/CantReachUrlError.js');
 const TestFailedError = require('../errors/TestFailedError.js');
@@ -34,8 +33,13 @@ function loadPage() {
 function loadElem(elem) {
   return loadPage().then(
     () => elem.then(
-      (el) => el
-    ).catch(() => { throw new ElementNotFoundError(); })
+      (el) => {
+        if (!el) {
+          throw new TestFailedError();
+        }
+        return el;
+      }
+    )
   );
 }
 
@@ -55,9 +59,10 @@ module.exports = {
       (browser) => browser.newPage().then(
         (page) => page.goto(url).then(
           () => page
-        ).catch(() => { throw new CantReachUrlError(); })
-      )
+        )
+      ).catch(() => { throw new CantReachUrlError(); })
     );
+    return pagePromise;
   },
   WAIT: (timeout) => {
     if (timeout) {
@@ -131,12 +136,27 @@ module.exports = {
   GET: {
     ONE: (selector) => {
       return loadPage().then(
-        (page) => page.$(selector).catch(() => { throw new ElementNotFoundError(); })
-      );
+        (page) => page.$(selector).then(
+          (elem) => {
+            if (!elem) {
+              throw new TestFailedError();
+            }
+            return elem;
+          }
+        )
+      // ez az aszinkronitás kikerülése miatt kell. nem létező selectornál hibát jelez, hogy a böngésző bezárt a lekérdezés előtt
+      ).catch(() => {});
     },
     MANY: (selector) => {
       return loadPage().then(
-        (page) => page.$$(selector).catch(() => { throw new ElementNotFoundError(); })
+        (page) => page.$$(selector).then(
+          (elems) => {
+            if (!elems) {
+              throw new TestFailedError();
+            }
+            return elems;
+          }
+        )
       );
     },
     ATTRIBUTE: (elem, attribute) => {
@@ -157,8 +177,14 @@ module.exports = {
     EXISTS: (selector) => {
       return loadPage().then(
         (page) => page.$(selector).then(
-          (elem) => !!elem
-        ).catch(() => { throw new ElementNotFoundError(); })
+          (elem) => {
+            if (!elem) {
+              throw new TestFailedError();
+            }
+
+            return !!elem;
+          }
+        )
       );
     },
     HAS_ATTRIBUTE: (elem, attr) => {
