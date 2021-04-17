@@ -12,6 +12,10 @@ Az adatfeltöltés _(seedelés)_ elhagyható, viszont a táblákat létre kell h
 
 Seedelés nélkül felhasználók sem fognak generálódni, így **némelyik végpont elérhetetlenné válik!**
 
+**FONTOS**
+
+A szerver a Node.js 15.5.1-es verziójával készült. A megfelelő működéshez legalább 14-es Node.js szükséges!
+
 # Definíció
 Az alkalmazás egyik jelentős része, a definíciók változtathasága. Maga a webalkalmazás egy keret, amin keresztül lehetséges teszteket futtatni. Maga a tesztelő még csak `playwright`-ban van megírva a `definitions/playwright.js`-ben, de bármilyen **headless browsert** lehetséges definiálni.
 
@@ -49,7 +53,8 @@ _Erre is van példa a **hooks** táblában és **hooks/** mappában._
 # Tesztek
 A tesztek a hookokhoz hasonlóan működnek.
 
-Az adatbázisban van eltárolva minden teszthez a hozzá tartozó `callbackPath`, és az alapján keresi meg, majd futtatja a fileban lévő függvényt.
+A `config.yaml` fileban van eltárolva minden teszthez a hozzá tartozó `callbackPath`, és az alapján keresi meg, majd futtatja a fileban lévő függvényt.
+
 
 **FONTOS!**
 Bár az IntelliSense segíthet, azért érdemes megjegyezni a következőt, a kerettel kapcsolatban:
@@ -142,7 +147,7 @@ _Erre is van példa a **tests** táblában és **tests/** mappában._
   }
   ```
 
-- `PUT /`
+- `PUT /{id}`
 
   Tesztcsomag módosítására szolgáló végpont.
 
@@ -153,26 +158,18 @@ _Erre is van példa a **tests** táblában és **tests/** mappában._
   Példa kérés:
   ```json
   {
-    "id": 8,
     "name": "Név2",
     "isActive": false,
     "needsAuth": false,
   }
   ```
-- `DELETE /`
+- `DELETE /{id}`
 
   Tesztcsomag törlésére szolgáló végpont.
 
   Authentikáció szükséges: `Authorization: Bearer {JWT}`
 
   Csak oktató számára elérhető!
-
-  Példa kérés:
-  ```json
-  {
-    "id": 8,
-  }
-  ```
 
 ## Tesztek
 - `GET /`
@@ -213,7 +210,7 @@ _Erre is van példa a **tests** táblában és **tests/** mappában._
     "url": "localhost:5000"
   }
   ```
-- `PUT /`
+- `PUT /{id}`
 
   Tesztcsomag módosítására szolgáló végpont.
 
@@ -229,7 +226,7 @@ _Erre is van példa a **tests** táblában és **tests/** mappában._
     "isStackVisible": true,
   }
   ```
-- `DELETE /`
+- `DELETE /{id}`
 
   Teszt törlésére szolgáló végpont.
 
@@ -237,12 +234,6 @@ _Erre is van példa a **tests** táblában és **tests/** mappában._
 
   Csak oktató számára elérhető!
 
-  Példa kérés:
-  ```json
-  {
-    "id": 8,
-  }
-  ```
 ## Statisztikák
 
 Egy statisztika csak akkor kerül elmentésre, ha nincsen belépve felhasználó, vagy ha be van lépve, és jobb eredményt ért el, mint a korábban elmentett (a semminél csak jobb van).

@@ -154,7 +154,7 @@ module.exports = {
             if (!elems) {
               throw new TestFailedError();
             }
-            return elems;
+            return Array.from(elems);
           }
         )
       );

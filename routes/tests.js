@@ -2,24 +2,29 @@ const dotenv = require('dotenv');
 const express = require('express');
 const router = express.Router();
 
-const Test = require('../models/Test');
+const { readFileSync, writeFileSync } = require('fs');
+const yaml = require('js-yaml');
+const config = readFileSync('./config.yaml');
+
+const packages = yaml.load(config);
+
 const runner = require('../runner');
 
 dotenv.config();
+const CONFIG_PATH = '../config.yaml';
 
 const jwt = require('express-jwt');
 const getAuthentication = require('../utils/getAuthentication');
 const createOrUpdateStatistic = require('../utils/createOrUpdateStatistic');
-const Package = require('../models/Package');
 const jwtMiddleware = jwt({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] });
 
 router
   .get('/', async (req, res) => {
-    const tests = await Test.findAll();
+    const tests = packages.map((pck) => pck.tests).flat();
     res.send(tests);
   })
   .get('/:id', async (req, res) => {
-    const test = await Test.findOne({ where: { id: req.params.id}});
+    const test = packages.map((pckg) => pckg.tests).flat()[req.params.id];
     res.send(test);
   })
   .post('/', jwtMiddleware, async (req, res) => {
@@ -28,10 +33,7 @@ router
       errorMessages.push('Csak oktató tud tesztet létrehozni!');
     }
 
-    const packages = await Package.findAll();
-    const packageIds = packages.map((pckg) => pckg.id);
-
-    if (!packageIds.includes(req.body.packageId)) {
+    if (!packages[req.body.packageId]) {
       errorMessages.push('Nem létezik ilyen csomag!');
     }
 
@@ -43,19 +45,12 @@ router
       return;
     }
 
-    try {
-      await Test.create(req.body);
-    } catch(err) {
-      res.send({
-        severity: 'ERROR',
-        messages: err.errors
-      });
-      return;
-    }
+    packages[req.body.packageId] = req.body;
+    writeFileSync(`${__dirname}/${CONFIG_PATH}`, yaml.dump(packages), 'utf-8');
     res.sendStatus(200);
   })
   .post('/:id/run', async (req, res) => {
-    const test = await Test.findOne({ where: { id: req.params.id }});
+    const test = packages.map((pckg) => pckg.tests).flat()[req.params.id];
     const results = await runner([test], req.body.url);
 
     const jsonwt = getAuthentication(req, res);
@@ -64,7 +59,7 @@ router
 
     res.send(results);
   })
-  .put('/', jwtMiddleware, async (req, res) => {
+  .put('/:id', jwtMiddleware, async (req, res) => {
     if (!req.user.isTeacher) {
       res.send({
         severity: 'ERROR',
@@ -72,19 +67,38 @@ router
       });
       return;
     }
-
-    try {
-      await Test.update(req.body, { where: { id: req.body.id } });
-    } catch(err) {
+    if (!req.body.name) {
       res.send({
         severity: 'ERROR',
-        messages: err.errors
+        messages: ['A teszt nevének megadása kötelező!']
       });
       return;
     }
+
+    const pckgs = [...packages];
+    const test = {
+      ...packages.map((pckg) => pckg.tests).flat()[req.params.id],
+      ...req.body
+    };
+
+    const packageId = packages.findIndex(
+      (pckg) => pckg.tests.some((tst) => tst.name === test.name)
+    );
+
+    if (packageId === -1) {
+      res.send({
+        severity: 'ERROR',
+        messages: ['Nincsen ilyen nevű teszt elmentve!']
+      });
+      return;
+    }
+
+    pckgs[packageId].tests[req.params.id] = test;
+
+    writeFileSync(`${__dirname}/${CONFIG_PATH}`, yaml.dump(pckgs), 'utf-8');
     res.sendStatus(200);
   })
-  .delete('/', jwtMiddleware, async (req, res) => {
+  .delete('/:id', jwtMiddleware, async (req, res) => {
     if (!req.user.isTeacher) {
       res.send({
         severity: 'ERROR',
@@ -93,15 +107,27 @@ router
       return;
     }
 
-    try {
-      await Test.destroy({ where: { id: req.body.id}});
-    } catch(err) {
+    if (!req.body.name) {
       res.send({
         severity: 'ERROR',
-        messages: err.errors
+        messages: ['A teszt nevének megadása kötelező!']
       });
       return;
     }
+
+    const pckgs = [...packages];
+
+    const testName = pckgs.map(
+      (pckg) => pckg.tests
+    ).flat()[req.params.id].name;
+
+    const packageId = packages.findIndex(
+      (pckg) => pckg.tests.some((test) => test.name === testName)
+    );
+
+    pckgs[packageId].tests.splice(req.params.id, 1);
+
+    writeFileSync(`${__dirname}/${CONFIG_PATH}`, yaml.dump(pckgs), 'utf-8');
     res.sendStatus(200);
   });
 

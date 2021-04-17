@@ -2,12 +2,17 @@ const dotenv = require('dotenv');
 const express = require('express');
 const router = express.Router();
 
-const Package = require('../models/Package');
-const Test = require('../models/Test');
+const { readFileSync, writeFileSync } = require('fs');
+const yaml = require('js-yaml');
+const config = readFileSync('./config.yaml');
+
+const packages = yaml.load(config);
+
 const Hook = require('../models/Hook');
 const runner = require('../runner');
 
 dotenv.config();
+const CONFIG_PATH = '../config.yaml';
 
 const jwt = require('express-jwt');
 const jwtMiddleware = jwt({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] });
@@ -17,12 +22,10 @@ const createOrUpdateStatistic = require('../utils/createOrUpdateStatistic');
 
 router
   .get('/', async (req, res) => {
-    const packages = await Package.findAll();
     res.send(packages);
   })
   .get('/:id', async (req, res) => {
-    const pckg = await Package.findOne({ where: { id: req.params.id }});
-    res.send(pckg);
+    res.send(packages[req.params.id]);
   })
   .get('/:id/activate', jwtMiddleware, async (req, res) => {
     if (!req.user.isTeacher) {
@@ -33,7 +36,9 @@ router
       return;
     }
 
-    await Package.update({ isActive: true }, { where: { id: req.params.id } });
+    packages[req.params.id].isActive = true;
+    writeFileSync(`${__dirname}/${CONFIG_PATH}`, yaml.dump(packages), 'utf-8');
+
     res.sendStatus(200);
   })
   .get('/:id/deactivate', jwtMiddleware, async (req, res) => {
@@ -44,17 +49,16 @@ router
       });
       return;
     }
+    packages[req.params.id].isActive = false;
+    writeFileSync(`${__dirname}/${CONFIG_PATH}`, yaml.dump(packages), 'utf-8');
 
-    await Package.update({ isActive: false }, { where: { id: req.params.id } });
     res.sendStatus(200);
   })
   .get('/:id/tests', async (req, res) => {
-    const tests = await Test.findAll({ where: { packageId: req.params.id }});
-    res.send(tests);
+    res.send(packages[req.params.id].tests);
   })
   .get('/:id/tests/:testId', async (req, res) => {
-    const test = await Test.findOne({ where: { packageId: req.params.id, id: req.params.testId }});
-    res.send(test);
+    res.send(packages[req.params.id].tests[req.params.testId]);
   })
   .post('/', jwtMiddleware, async (req, res) => {
     const errorMessages = [];
@@ -75,19 +79,18 @@ router
       return;
     }
 
-    try {
-      await Package.create(req.body);
-    } catch(err) {
-      res.send({
-        severity: 'ERROR',
-        messages: err.errors
-      });
-      return;
-    }
+    packages.push({
+      ...req.body,
+      tests: []
+    });
+    console.log(yaml.dump(packages));
+
+    writeFileSync(`${__dirname}/${CONFIG_PATH}`, yaml.dump(packages), 'utf-8');
+
     res.sendStatus(200);
   })
   .post('/:id/run', async (req, res) => {
-    const pckg = await Package.findOne({ where: { id: req.params.id }});
+    const pckg = packages[req.params.id];
     const errorMessages = [];
 
     // activation check
@@ -130,7 +133,7 @@ router
       return;
     }
 
-    const packageTests = await Test.findAll({ where: { packageId: req.params.id}});
+    const packageTests = pckg.tests;
     const hooks = await Hook.findAll({ where: { packageId: req.params.id }});
     let tests = packageTests;
 
@@ -156,7 +159,7 @@ router
 
     res.send(results);
   })
-  .put('/', jwtMiddleware, async (req, res) => {
+  .put('/:id', jwtMiddleware, async (req, res) => {
     if (!req.user.isTeacher) {
       res.send({
         severity: 'ERROR',
@@ -165,18 +168,14 @@ router
       return;
     }
 
-    try {
-      await Package.update(req.body, { where: { id: req.body.id } });
-    } catch(err) {
-      res.send({
-        severity: 'ERROR',
-        messages: err.errors
-      });
-      return;
-    }
+    packages[req.params.id] = {
+      ...packages[req.params.id],
+      ...req.body
+    };
+    writeFileSync(`${__dirname}/${CONFIG_PATH}`, yaml.dump(packages), 'utf-8');
     res.sendStatus(200);
   })
-  .delete('/', jwtMiddleware, async (req, res) => {
+  .delete('/:id', jwtMiddleware, async (req, res) => {
     if (!req.user.isTeacher) {
       res.send({
         severity: 'ERROR',
@@ -185,16 +184,8 @@ router
       return;
     }
 
-    try {
-      await Package.destroy({ where: { id: req.body.id}});
-    } catch(err) {
-      console.log(err);
-      res.send({
-        severity: 'ERROR',
-        messages: err.errors
-      });
-      return;
-    }
+    packages.splice(req.params.id, 1);
+    writeFileSync(`${__dirname}/${CONFIG_PATH}`, yaml.dump(packages), 'utf-8');
     res.sendStatus(200);
   });
 
