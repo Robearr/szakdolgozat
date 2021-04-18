@@ -1,10 +1,11 @@
+const CONFIG_PATH = process.env.NODE_ENV === 'test' ? `${__dirname}/../config.test.yaml` : `${__dirname}/../config.yaml`;
 const dotenv = require('dotenv');
 const express = require('express');
 const router = express.Router();
 
 const { readFileSync, writeFileSync } = require('fs');
 const yaml = require('js-yaml');
-const config = readFileSync('./config.yaml');
+const config = readFileSync(CONFIG_PATH);
 
 const packages = yaml.load(config);
 
@@ -12,7 +13,6 @@ const Hook = require('../models/Hook');
 const runner = require('../runner');
 
 dotenv.config();
-const CONFIG_PATH = '../config.yaml';
 
 const jwt = require('express-jwt');
 const jwtMiddleware = jwt({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] });
@@ -37,9 +37,9 @@ router
     }
 
     packages[req.params.id].isActive = true;
-    writeFileSync(`${__dirname}/${CONFIG_PATH}`, yaml.dump(packages), 'utf-8');
+    writeFileSync(CONFIG_PATH, yaml.dump(packages), 'utf-8');
 
-    res.sendStatus(200);
+    res.send(packages[req.params.id]);
   })
   .get('/:id/deactivate', jwtMiddleware, async (req, res) => {
     if (!req.user.isTeacher) {
@@ -50,9 +50,9 @@ router
       return;
     }
     packages[req.params.id].isActive = false;
-    writeFileSync(`${__dirname}/${CONFIG_PATH}`, yaml.dump(packages), 'utf-8');
+    writeFileSync(CONFIG_PATH, yaml.dump(packages), 'utf-8');
 
-    res.sendStatus(200);
+    res.send(packages[req.params.id]);
   })
   .get('/:id/tests', async (req, res) => {
     res.send(packages[req.params.id].tests);
@@ -71,6 +71,34 @@ router
       errorMessages.push('Csak oktató tud csomagot létrehozni!');
     }
 
+    if (!req.body.name) {
+      errorMessages.push('A tesztcsomag nevének megadása kötelező!');
+    }
+
+    if (!req.body.timeout) {
+      errorMessages.push('A timeout megadása kötelező!');
+    }
+
+    if (req.body.isActive && !['0', '1', 'true', 'false'].includes(`${req.body.isActive}`)) {
+      errorMessages.push('Az isActive csak a következő értékeket veheti fel: 0, 1, true, false');
+    }
+
+    if (req.body.needsAuth && !['0', '1', 'true', 'false'].includes(`${req.body.needsAuth}`)) {
+      errorMessages.push('A needsAuth csak a következő értékeket veheti fel: 0, 1, true, false');
+    }
+
+    if (isNaN(parseInt(req.body.timeout))) {
+      errorMessages.push('A timeout csak szám lehet!');
+    }
+
+    if (parseInt(req.body.timeout) < 0) {
+      errorMessages.push('A timeoutnak nagyobbnak kell lennie nullánál!');
+    }
+
+    if (packages.map((pckg) => pckg.name).includes(req.body.name)) {
+      errorMessages.push('A megadott csomagnév már létezik!');
+    }
+
     if (errorMessages.length) {
       res.send({
         severity: 'ERROR',
@@ -83,11 +111,10 @@ router
       ...req.body,
       tests: []
     });
-    console.log(yaml.dump(packages));
 
-    writeFileSync(`${__dirname}/${CONFIG_PATH}`, yaml.dump(packages), 'utf-8');
+    writeFileSync(CONFIG_PATH, yaml.dump(packages), 'utf-8');
 
-    res.sendStatus(200);
+    res.send(packages);
   })
   .post('/:id/run', async (req, res) => {
     const pckg = packages[req.params.id];
@@ -172,8 +199,8 @@ router
       ...packages[req.params.id],
       ...req.body
     };
-    writeFileSync(`${__dirname}/${CONFIG_PATH}`, yaml.dump(packages), 'utf-8');
-    res.sendStatus(200);
+    writeFileSync(CONFIG_PATH, yaml.dump(packages), 'utf-8');
+    res.send(packages[req.params.id]);
   })
   .delete('/:id', jwtMiddleware, async (req, res) => {
     if (!req.user.isTeacher) {
@@ -185,8 +212,8 @@ router
     }
 
     packages.splice(req.params.id, 1);
-    writeFileSync(`${__dirname}/${CONFIG_PATH}`, yaml.dump(packages), 'utf-8');
-    res.sendStatus(200);
+    writeFileSync(CONFIG_PATH, yaml.dump(packages), 'utf-8');
+    res.send(packages);
   });
 
 module.exports = router;

@@ -1,0 +1,30 @@
+- name: Szimpla tesztcsomag
+  description: >-
+    Egy egyszerű tesztcsomag, ami pár alap tesztet tartalmaz magában, hogy a
+    normális működést le tudjam ellenőrizni.
+  isActive: true
+  availableFrom: '2021-01-01'
+  availableTo: '2021-12-12'
+  needsAuth: false
+  ipMask: ''
+  urlMask: ''
+  timeout: 10000
+  tests:
+    - name: Négyzet számolása
+      timeout: 10000
+      customErrorMessage: Nem jók a négyzetszámok!
+      isCustomErrorMessageVisible: true
+      isErrorDescriptionVisible: true
+      isStackVisible: true
+      points: 3
+      packageId: 1
+      callbackPath: tests/squareCalculatorCheck.js
+    - name: Páros számok
+      timeout: 10000
+      customErrorMessage: Nem párosak a számok!
+      isCustomErrorMessageVisible: true
+      isErrorDescriptionVisible: false
+      isStackVisible: false
+      points: 3
+      packageId: 1
+      callbackPath: tests/evenNumbersChecker.js
