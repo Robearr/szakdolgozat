@@ -4,12 +4,13 @@ const packagesRouter = require('./routes/packages');
 const authRouter = require('./routes/auth');
 const statisticsRouter = require('./routes/statistics');
 const session = require('express-session');
-
+const cors = require('cors');
 const app = express();
 
 const jwt = require('express-jwt');
 const jwtMiddleware = jwt({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] });
 
+app.use(cors());
 app.use(express.json());
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -32,8 +33,8 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server listens on port ${process.env.PORT || 3000}`);
+app.listen(process.env.PORT || 5000, () => {
+  console.log(`Server listens on port ${process.env.PORT || 5000}`);
 });
 
 module.exports = app;
