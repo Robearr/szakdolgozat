@@ -64,4 +64,13 @@
   ipMask: ''
   urlMask: ''
   timeout: 5252345
-  tests: []
+  tests:
+    - name: Háttérszín változtatás2
+      timeout: 10000
+      customErrorMessage: Nem jó a háttérszín!
+      isCustomErrorMessageVisible: true
+      isErrorDescriptionVisible: false
+      isStackVisible: false
+      points: 5
+      packageId: 1
+      callbackPath: tests/changeBackgroundColor.js

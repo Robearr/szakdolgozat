@@ -4,6 +4,7 @@ import MessageBoxProvider from './MessageBoxProvider';
 import MessageBox from './ui/MessageBox';
 import IndexView from './views/IndexView';
 import LoginView from './views/LoginView';
+import PackagesView from './views/PackagesView';
 
 function App(): JSX.Element {
   return (
@@ -11,8 +12,8 @@ function App(): JSX.Element {
       <MessageBox />
       <Router>
         <Switch>
-          {/* <Route path='/packages'/>
-          <Route path='/package/:id'/> */}
+          <Route path='/packages' exact component={PackagesView}/>
+          {/* <Route path='/package/:id'/> */}
           <Route path='/login' exact component={LoginView}/>
           <Route path='/' exact component={IndexView}/>
         </Switch>
