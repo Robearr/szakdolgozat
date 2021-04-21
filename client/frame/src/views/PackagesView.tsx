@@ -1,4 +1,4 @@
-import { DetailsList, IColumn, IGroup, Spinner } from '@fluentui/react';
+import { ActionButton, DetailsList, IColumn, IGroup, MarqueeSelection, Selection, SelectionMode, Spinner, TextField } from '@fluentui/react';
 import React, { useContext, useEffect, useState } from 'react';
 import { MessageBoxContext } from '../MessageBoxProvider';
 import ajax from '../utils/ajax';
@@ -37,8 +37,11 @@ interface PackagesProps {}
 
 const PackagesView: React.FC<PackagesProps> = () => {
 
+  const [tests, setTests] = useState<TestType[]>([]);
   const [testNames, setTestNames] = useState<TestItemType[]>([]);
   const [groups, setGroups] = useState<IGroup[]>();
+  const [url, setUrl] = useState<string>('');
+  const [selection] = useState<Selection>(new Selection());
   const { showMessage } = useContext(MessageBoxContext);
 
   useEffect(() => {
@@ -55,28 +58,28 @@ const PackagesView: React.FC<PackagesProps> = () => {
       setGroups(pckgs.map(
         (res, i) => {
           const startIndex = i - 1 < 0 ? 0 : pckgs[i - 1].tests.length;
-          console.log(startIndex);
-
           return { key: `${res}-${i}`, name: res.name, startIndex, count: pckgs[i].tests?.length || 0, level: 0 };
         }
       ));
 
-      const tests = await ajax.get('tests');
+      const result = await ajax.get('tests');
 
-      if (tests.severity) {
-        tests.messages.forEach(
-          (message) => showMessage(tests.severity, message)
+      if (result.severity) {
+        result.messages.forEach(
+          (message) => showMessage(result.severity, message)
         );
         return;
       }
 
-      setTestNames(tests.map(
+      setTestNames(result.map(
         (test: TestType) => ({
           name: test.name,
           points: test.points,
           timeout: test.timeout
         })
       ));
+
+      setTests(result);
 
     })();
   }, []);
@@ -87,16 +90,54 @@ const PackagesView: React.FC<PackagesProps> = () => {
     { key: 'timeout', name: 'timeout', fieldName: 'timeout', minWidth: 100, maxWidth: 200, isResizable: true },
   ];
 
+  const runTests = () => {
+    const runnableTests = selection.getSelectedIndices().map(
+      (i) => ({ [tests[i].packageId]: i })
+    );
+
+    const map = new Map();
+
+    runnableTests.forEach(
+      (test: Record<string, number>) => {
+        const key = Object.keys(test)[0];
+        if (!map.get(key)) {
+          map.set(key, [test[key]]);
+        } else {
+          map.get(key).push(test[key]);
+        }
+      }
+    );
+
+    Array.from(map.keys()).forEach(
+      (key) => {
+        ajax.post(`packages/${key - 1}/run`, {
+          tests: map.get(key),
+          url
+        });
+      }
+    );
+
+  };
+
+  if (!testNames?.length) {
+    return <Spinner />;
+  }
+
   return (
     <div className=''>
-      {testNames?.length ?
+      <MarqueeSelection selection={selection}>
         <DetailsList
           items={testNames}
           groups={groups}
           columns={columns}
-        /> :
-        <Spinner />
-      }
+          selection={selection}
+          selectionMode={SelectionMode.multiple}
+        />
+      </MarqueeSelection>
+
+      <TextField label='Tesztelendő url' onChange={(e) => setUrl(e.currentTarget.value)}/>
+      <ActionButton text='Tesztelés' onClick={runTests} />
+
     </div>
   );
 };
