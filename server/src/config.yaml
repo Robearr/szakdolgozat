@@ -72,5 +72,5 @@
       isErrorDescriptionVisible: false
       isStackVisible: false
       points: 5
-      packageId: 1
+      packageId: 2
       callbackPath: tests/changeBackgroundColor.js

@@ -166,7 +166,7 @@ router
 
     if (req.body.tests) {
       tests = packageTests.filter(
-        (packageTest) => req.body.tests.includes(packageTest.id)
+        (packageTest, i) => req.body.tests.includes(i)
       );
     }
 
