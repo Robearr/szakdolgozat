@@ -1,7 +1,7 @@
 import { ActionButton, DetailsList, IColumn, IGroup, MarqueeSelection, Selection, SelectionMode, Spinner, TextField } from '@fluentui/react';
 import React, { useContext, useEffect, useState } from 'react';
 import { MessageBoxContext } from '../MessageBoxProvider';
-import ajax from '../utils/ajax';
+import ajax, { ResultResponseType } from '../utils/ajax';
 
 export type TestType = {
   name: string,
@@ -30,7 +30,11 @@ export type PackageType = {
 
 type TestItemType = {
   name: string,
-  points: number
+  points: number,
+  result?: number,
+  customErrorMessage?: string,
+  errorDescription?: string,
+  stack?: string
 };
 
 interface PackagesProps {}
@@ -38,7 +42,7 @@ interface PackagesProps {}
 const PackagesView: React.FC<PackagesProps> = () => {
 
   const [tests, setTests] = useState<TestType[]>([]);
-  const [testNames, setTestNames] = useState<TestItemType[]>([]);
+  const [testDatas, setTestDatas] = useState<TestItemType[]>([]);
   const [groups, setGroups] = useState<IGroup[]>();
   const [url, setUrl] = useState<string>('');
   const [selection] = useState<Selection>(new Selection());
@@ -71,7 +75,7 @@ const PackagesView: React.FC<PackagesProps> = () => {
         return;
       }
 
-      setTestNames(result.map(
+      setTestDatas(result.map(
         (test: TestType) => ({
           name: test.name,
           points: test.points,
@@ -85,9 +89,13 @@ const PackagesView: React.FC<PackagesProps> = () => {
   }, []);
 
   const columns: IColumn[] = [
-    { key: 'name', name: 'név', fieldName: 'name', minWidth: 100, maxWidth: 200, isResizable: true },
-    { key: 'points', name: 'pontok', fieldName: 'points', minWidth: 100, maxWidth: 200, isResizable: true },
-    { key: 'timeout', name: 'timeout', fieldName: 'timeout', minWidth: 100, maxWidth: 200, isResizable: true },
+    { key: 'name', name: 'Név', fieldName: 'name', minWidth: 100, maxWidth: 200, isResizable: true },
+    { key: 'timeout', name: 'Timeout', fieldName: 'timeout', minWidth: 100, maxWidth: 200, isResizable: true },
+    { key: 'points', name: 'Pontszám', fieldName: 'points', minWidth: 100, maxWidth: 200, isResizable: true },
+    { key: 'result', name: 'Eredmény', fieldName: 'result', minWidth: 100, maxWidth: 200, isResizable: true },
+    { key: 'customErrorMessage', name: 'Hibaüzenet', fieldName: 'customErrorMessage', minWidth: 100, maxWidth: 200, isResizable: true },
+    { key: 'errorDescription', name: 'Hiba leírása', fieldName: 'errorDescription', minWidth: 100, maxWidth: 200, isResizable: true },
+    { key: 'stack', name: 'Stack trace', fieldName: 'stack', minWidth: 100, maxWidth: 200, isResizable: true },
   ];
 
   const runTests = () => {
@@ -109,17 +117,51 @@ const PackagesView: React.FC<PackagesProps> = () => {
     );
 
     Array.from(map.keys()).forEach(
-      (key) => {
-        ajax.post(`packages/${key - 1}/run`, {
-          tests: map.get(key),
+      async (key) => {
+
+        // az id nélküli tárolás miatt valahogy meg kell tartani a normális indexelést, ezért
+        // itt történik a normalizálás
+        let normalizedTests = map.get(key);
+
+        if (key > 0 && groups) {
+          for (let i = 0; i < key - 1; i++) {
+            normalizedTests = map.get(key).map(
+              (testId: number) => testId -= groups[i].count
+            );
+          }
+        }
+
+        const results: ResultResponseType = await ajax.post(`packages/${key - 1}/run`, {
+          tests: normalizedTests,
           url
         });
+
+        if (results.severity) {
+          results.messages.forEach(
+            (message) => showMessage(results.severity, message)
+          );
+          return;
+        }
+
+        const testDataCopies = [...testDatas];
+
+        map.get(key).forEach(
+          (dataIndex: number, i: number) => {
+            testDataCopies[dataIndex] = {
+              ...testDataCopies[dataIndex],
+              ...results[i],
+              result: results[i].points
+            };
+          }
+        );
+
+        setTestDatas(testDataCopies);
       }
     );
 
   };
 
-  if (!testNames?.length) {
+  if (!testDatas?.length) {
     return <Spinner />;
   }
 
@@ -127,7 +169,7 @@ const PackagesView: React.FC<PackagesProps> = () => {
     <div className=''>
       <MarqueeSelection selection={selection}>
         <DetailsList
-          items={testNames}
+          items={testDatas}
           groups={groups}
           columns={columns}
           selection={selection}
