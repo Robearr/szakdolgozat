@@ -33,7 +33,7 @@ const LoginView: React.FC<LoginProps> = () => {
     <Stack horizontalAlign='center' verticalAlign='center'>
       <form>
         <TextField label='Felhasználónév' onChange={(e) => setUsername(e.currentTarget.value)}/>
-        <TextField type='password' label='Jelszó' onChange={(e) => setPassword(e.currentTarget.value)}/>
+        <TextField type='password' canRevealPassword label='Jelszó' onChange={(e) => setPassword(e.currentTarget.value)}/>
         <PrimaryButton text='Belépés' onClick={handleLogin} />
       </form>
     </Stack>

@@ -1,4 +1,4 @@
-import { PackageType, TestType } from '../views/PackagesView';
+import { PackageType, TestType } from '../views/PackageView';
 
 type ErrorResponseType = {
   severity: string,
@@ -10,7 +10,10 @@ export type LoginResponseType = ErrorResponseType & {
 };
 
 export type ResultResponseType = ErrorResponseType & {
-  points: number
+  points?: number,
+  customErrorMessage?: string,
+  errorDescription?: string,
+  stack?: string
 }[];
 
 export type PackagesResponseType = ErrorResponseType & PackageType[] & PackageType;
