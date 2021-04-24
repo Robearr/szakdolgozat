@@ -2,6 +2,7 @@ import { PrimaryButton, Stack, TextField } from '@fluentui/react';
 import React, { useContext, useState } from 'react';
 import { MessageBoxContext } from '../MessageBoxProvider';
 import ajax, { LoginResponseType } from '../utils/ajax';
+import crypto from 'crypto';
 
 interface LoginProps {}
 
@@ -15,9 +16,14 @@ const LoginView: React.FC<LoginProps> = () => {
   const handleLogin = (e: React.MouseEvent<PrimaryButton>) => {
     e.preventDefault();
 
+    if (!process.env.REACT_APP_HASH_ALGORITHM) {
+      showMessage('ERROR', 'Nincs megadva hash algoritmus! Keresd fel az illetékes(eke)t!');
+      return;
+    }
+
     ajax.post('auth/login', {
       name: username,
-      password
+      password: crypto.createHash(process.env.REACT_APP_HASH_ALGORITHM).update(password).digest('hex')
     }).then(
       (result: LoginResponseType) => {
         if (result?.severity) {

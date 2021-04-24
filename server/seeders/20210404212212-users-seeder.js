@@ -3,13 +3,13 @@ module.exports = {
     return queryInterface.bulkInsert('users', [
       {
         name: 'admin',
-        password: '21232f297a57a5a743894a0e4a801fc3',
+        password: 'bced6fd149cfcdb85741768da12e41c6',
         isTeacher: true,
         createdAt: new Date()
       },
       {
         name: 'test',
-        password: 'ee11cbb19052e40b07aac0ca060c23ee',
+        password: '3de1d73a19c7590ee66398a17e93bd67',
         isTeacher: false,
         createdAt: new Date()
       }
