@@ -13,6 +13,7 @@ function App(): JSX.Element {
       <MessageBox />
       <Router>
         <Switch>
+          {/* <Route path='/statistics' exact/> */}
           <Route path='/packages' exact component={PackagesView}/>
           <Route path='/package/:id' component={PackageView} />
           <Route path='/login' exact component={LoginView}/>

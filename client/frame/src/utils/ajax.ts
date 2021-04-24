@@ -16,10 +16,17 @@ export type ResultResponseType = ErrorResponseType & {
   stack?: string
 }[];
 
+export type StatisticResponseType = {
+  userId: number|null,
+  result: number,
+  testId: number|null
+  packageId: number|null
+};
+
 export type PackagesResponseType = ErrorResponseType & PackageType[] & PackageType;
 export type TestsResponseType = TestType[] & TestType;
 
-type GetResponseType = PackagesResponseType & TestsResponseType;
+type GetResponseType = PackagesResponseType & TestsResponseType & StatisticResponseType[];
 type PostResponseType = LoginResponseType & ResultResponseType;
 
 const ajax = {
