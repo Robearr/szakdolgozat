@@ -23,24 +23,26 @@ type GetResponseType = PackagesResponseType & TestsResponseType;
 type PostResponseType = LoginResponseType & ResultResponseType;
 
 const ajax = {
-  get: (url: string): Promise<GetResponseType> => {
+  get: (url: string, options?: RequestInit): Promise<GetResponseType> => {
     return fetch(`${process.env.REACT_APP_API_BASE_URL}/${url}`, {
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      ...options
     }).then(
       (res) => res.json()
     ).catch(
       (err) => console.log(err)
     );
   },
-  post: (url: string, body: Record<string, unknown>): Promise<PostResponseType> => {
+  post: (url: string, body: Record<string, unknown>, options?: RequestInit): Promise<PostResponseType> => {
     return fetch(`${process.env.REACT_APP_API_BASE_URL}/${url}`, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      ...options
     }).then(
       (res) => res.json()
     ).catch(

@@ -3,6 +3,7 @@ import React, { useContext, useState } from 'react';
 import { MessageBoxContext } from '../MessageBoxProvider';
 import ajax, { LoginResponseType } from '../utils/ajax';
 import crypto from 'crypto';
+import { useCookies } from 'react-cookie';
 
 interface LoginProps {}
 
@@ -12,6 +13,7 @@ const LoginView: React.FC<LoginProps> = () => {
 
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [cookies, setCookies] = useCookies(['token']);
 
   const handleLogin = (e: React.MouseEvent<PrimaryButton>) => {
     e.preventDefault();
@@ -31,6 +33,13 @@ const LoginView: React.FC<LoginProps> = () => {
             (message) => showMessage(result.severity, message)
           );
         }
+
+        const date = new Date();
+        date.setHours(date.getHours() + 2);
+
+        setCookies('token', result.token, {
+          expires: date
+        });
       }
     );
   };
