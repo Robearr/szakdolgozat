@@ -38,12 +38,12 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
   // TODO
   const navStyle: Partial<INavStyles> = {
     root: {
-      width: 208,
-      height: 350,
+      width: '12vw',
+      height: '100vh',
       boxSizing: 'border-box',
       border: '1px solid #eee',
       overflowY: 'auto',
-      float: 'left'
+      float: 'left',
     }
   };
 
@@ -94,16 +94,16 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
   };
 
   return (
-    <>
+    <div style={{ overflow: 'hidden' }}>
       <Nav
         groups={groups}
         styles={navStyle}
         onLinkClick={handleLinkClick}
       />
-      <div>
+      <div style={{ float: 'left' }}>
         {children}
       </div>
-    </>
+    </div>
   );
 };
 
