@@ -1,8 +1,8 @@
-import { DefaultButton, Link, NeutralColors } from '@fluentui/react';
+import { DefaultButton, Separator, Stack } from '@fluentui/react';
 import React, { CSSProperties } from 'react';
 import { useCookies } from 'react-cookie';
-import { NavLink } from 'react-router-dom';
 import { PackageType } from '../views/PackageView';
+import PackageData from './PackageData';
 
 interface PackageListItemProps {
   index: number|undefined,
@@ -28,18 +28,8 @@ const PackageListItem: React.FC<PackageListItemProps> = ({ pckg, index, selectPa
   const isDisabled = (pckg?.needsAuth && !cookies.token) || !pckg?.isActive;
 
   return (
-    <div style={styles.item}>
-      <Link style={styles.name}><NavLink to={`/package/${index}`}>{pckg?.name}</NavLink></Link>
-      <p className='description'>{pckg?.description}</p>
-
-      <p style={{ backgroundColor: pckg?.isActive ? '#107c10' : '#a80000' }}>{pckg?.isActive ? 'Aktív' : 'Nem elérhető'}</p>
-      <p>Elérhető: {pckg?.availableFrom} - {pckg?.availableTo}</p>
-
-      <p>{pckg?.ipMask ? 'Van' : 'Nincs'} IP mask</p>
-      <p>{pckg?.urlMask ? 'Van' : 'Nincs'} URL mask</p>
-
-      <p>Maximum futási idő: {pckg?.timeout} ms</p>
-      <p>Tesztek száma: {pckg?.tests.length}</p>
+    <Stack style={styles.item}>
+      <PackageData pckg={pckg} index={index} />
 
       <DefaultButton
         text='Teszt futtatása'
@@ -47,18 +37,19 @@ const PackageListItem: React.FC<PackageListItemProps> = ({ pckg, index, selectPa
         onClick={() => selectPackageToRun(index)}
         disabled={isDisabled}
       />
-    </div>
+
+    </Stack>
   );
 };
 
 const styles: Record<string, CSSProperties> = {
   item: {
-    backgroundColor: NeutralColors.gray30,
     marginBottom: '1vh',
-    width: '85vw'
+    padding: '1vh',
   },
-  name: {
-    fontVariant: 'small-caps'
+  centeredFlex: {
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 };
 

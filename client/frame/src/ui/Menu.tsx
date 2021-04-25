@@ -1,16 +1,18 @@
 import { INavLink, INavLinkGroup, INavStyles, Nav } from '@fluentui/react';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { CSSProperties, useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useHistory } from 'react-router';
 import { MessageBoxContext } from '../MessageBoxProvider';
 import ajax from '../utils/ajax';
+import { throttle } from 'lodash';
 
 interface MenuProps {}
 
 const Menu: React.FC<MenuProps> = ({ children }) => {
 
-  const [packageLinks, setPackageLinks] = useState<INavLink[]>();
+  const [packageLinks, setPackageLinks] = useState<INavLink[]>([]);
   const [cookies, setCookies, removeCookies] = useCookies(['token']);
+  const [navWidth, setNavWidth] = useState<number>(150);
   const history = useHistory();
   const { showMessage } = useContext(MessageBoxContext);
 
@@ -35,12 +37,10 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
     })();
   }, []);
 
-  // TODO
   const navStyle: Partial<INavStyles> = {
     root: {
-      width: '12vw',
+      width: navWidth,
       height: '100vh',
-      boxSizing: 'border-box',
       border: '1px solid #eee',
       overflowY: 'auto',
       float: 'left',
@@ -93,6 +93,28 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
     }
   };
 
+  const resizeMenu = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.clientX < 150 || Math.abs(navWidth - e.clientX) < 20) {
+      return;
+    }
+
+    setNavWidth(e.clientX);
+  };
+
+  const styles: Record<string, CSSProperties> = {
+    dragHandle: {
+      cursor: 'ew-resize',
+      float: 'left',
+      width: 6,
+      height: '100vh',
+      userSelect: 'none',
+    },
+    rightSide: {
+      left: navWidth
+    }
+  };
+
+
   return (
     <div style={{ overflow: 'hidden' }}>
       <Nav
@@ -100,7 +122,16 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
         styles={navStyle}
         onLinkClick={handleLinkClick}
       />
-      <div style={{ float: 'left' }}>
+
+      <div
+        style={styles.dragHandle}
+        draggable
+        onDrag={throttle(resizeMenu, 100)}
+      >
+          &nbsp;
+      </div>
+
+      <div style={styles.rightSide}>
         {children}
       </div>
     </div>

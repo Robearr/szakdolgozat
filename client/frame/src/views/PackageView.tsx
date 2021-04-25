@@ -2,6 +2,7 @@ import { ActionButton, DetailsList, IColumn, MarqueeSelection, Selection, Select
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { MessageBoxContext } from '../MessageBoxProvider';
+import PackageData from '../ui/PackageData';
 import ajax from '../utils/ajax';
 
 interface PackageViewProps {}
@@ -122,25 +123,16 @@ const PackageView: React.FC<PackageViewProps> = () => {
 
   return (
     <Stack>
-      <h1>{pckg?.name}</h1>
-      <h2>{pckg?.description}</h2>
-      <h3>{pckg?.availableFrom} - {pckg?.availableTo}</h3>
-      <h3>{pckg?.ipMask}</h3>
-      <h3>{pckg?.urlMask}</h3>
-      <h3>{pckg?.isActive}</h3>
-      <h3>{pckg?.needsAuth}</h3>
-      <h3>{pckg?.timeout}</h3>
+      <PackageData pckg={pckg} index={parseInt(params.id)} withoutTests />
 
       {isLoading ? <Spinner /> : null}
 
-      <MarqueeSelection selection={selection}>
-        <DetailsList
-          items={tests}
-          columns={columns}
-          selection={selection}
-          selectionMode={SelectionMode.multiple}
-        />
-      </MarqueeSelection>
+      <DetailsList
+        items={tests}
+        columns={columns}
+        selection={selection}
+        selectionMode={SelectionMode.multiple}
+      />
 
       <TextField label='Tesztelendő url' onChange={(e) => setUrl(e.currentTarget.value)}/>
       <ActionButton text='Tesztelés' onClick={runTests} />
