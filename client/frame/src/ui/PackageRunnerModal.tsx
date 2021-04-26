@@ -1,5 +1,6 @@
 import { IButtonStyles, IconButton, mergeStyleSets, Modal, PrimaryButton, Spinner, TextField } from '@fluentui/react';
 import React, { CSSProperties, useContext, useState } from 'react';
+import { useHistory } from 'react-router';
 import { MessageBoxContext } from '../MessageBoxProvider';
 import ajax from '../utils/ajax';
 import { PackageType } from '../views/PackageView';
@@ -14,6 +15,7 @@ interface PackageRunnerModalProps {
 const PackageRunnerModal: React.FC<PackageRunnerModalProps> = ({ isModalOpen, selectedPackageId, packages, setModalOpen }) => {
   const [isSending, setSending] = useState<boolean>(false);
   const [url, setUrl] = useState<string>('');
+  const history = useHistory();
 
   const { showMessage } = useContext(MessageBoxContext);
 
@@ -26,14 +28,14 @@ const PackageRunnerModal: React.FC<PackageRunnerModalProps> = ({ isModalOpen, se
 
     setSending(false);
 
-    if (result?.severity) {
-      result.messages.forEach(
+    if (result?.severity || result[0].severity) {
+      (result.messages || result[0].messages).forEach(
         (message) => showMessage(result.severity, message)
       );
       return;
     }
 
-    // TODO át kellene navigálni a PackageView-ba az eredménnyel
+    history.push(`/package/${selectedPackageId}`, result);
   };
 
   return (

@@ -34,6 +34,7 @@ const PackageListItem: React.FC<PackageListItemProps> = ({ pckg, index, selectPa
       <DefaultButton
         text='Teszt futtatása'
         title={getDisabledMessage()}
+        style={{ width: '10vw' }}
         onClick={() => selectPackageToRun(index)}
         disabled={isDisabled}
       />

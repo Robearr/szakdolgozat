@@ -1,9 +1,9 @@
-import { ActionButton, DetailsList, IColumn, MarqueeSelection, Selection, SelectionMode, Spinner, Stack, TextField } from '@fluentui/react';
-import React, { useContext, useEffect, useState } from 'react';
+import { DefaultButton, DetailsList, IColumn, Selection, SelectionMode, Spinner, Stack, TextField } from '@fluentui/react';
+import React, { CSSProperties, useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { MessageBoxContext } from '../MessageBoxProvider';
 import PackageData from '../ui/PackageData';
-import ajax from '../utils/ajax';
+import ajax, { ResultResponseType } from '../utils/ajax';
 
 interface PackageViewProps {}
 
@@ -67,6 +67,25 @@ const PackageView: React.FC<PackageViewProps> = () => {
       }
 
       setPckg(result);
+      setLoading(false);
+
+      if (history.state) {
+        setTests(history.state.state.map(
+          (testResult: ResultResponseType, i: number) => {
+            const tmp = Object.assign({}, testResult);
+            const gotPoints = tmp.points;
+            delete tmp.points;
+
+            return {
+              ...result.tests[i],
+              ...testResult,
+              result: gotPoints
+            };
+          }
+        ));
+        return;
+      }
+
       setTests(result.tests.map(
         (test) => {
           test.customErrorMessage = '';
@@ -74,7 +93,6 @@ const PackageView: React.FC<PackageViewProps> = () => {
         }
       ));
 
-      setLoading(false);
     })();
   }, []);
 
@@ -134,11 +152,20 @@ const PackageView: React.FC<PackageViewProps> = () => {
         selectionMode={SelectionMode.multiple}
       />
 
-      <TextField label='Tesztelendő url' onChange={(e) => setUrl(e.currentTarget.value)}/>
-      <ActionButton text='Tesztelés' onClick={runTests} />
+      <Stack style={styles.footer}>
+        <TextField label='Tesztelendő url' style={{ width: '30vw' }} onChange={(e) => setUrl(e.currentTarget.value)}/>
+        <DefaultButton text='Tesztelés' style={{ width: '10vw' }} onClick={runTests} />
+      </Stack>
 
     </Stack>
   );
+};
+
+const styles: Record<string, CSSProperties> = {
+  footer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 };
 
 export default PackageView;

@@ -9,12 +9,14 @@ export type LoginResponseType = ErrorResponseType & {
   token: string
 };
 
-export type ResultResponseType = ErrorResponseType & {
+export type ResultResponseType = ErrorResponseType & ErrorResponseType[] & {
   points?: number,
   customErrorMessage?: string,
   errorDescription?: string,
   stack?: string
-}[];
+};
+
+export type ResultsResponseType = ResultResponseType[];
 
 export type StatisticResponseType = {
   userId: number|null,
@@ -27,7 +29,7 @@ export type PackagesResponseType = ErrorResponseType & PackageType[] & PackageTy
 export type TestsResponseType = TestType[] & TestType;
 
 type GetResponseType = PackagesResponseType & TestsResponseType & StatisticResponseType[];
-type PostResponseType = LoginResponseType & ResultResponseType;
+type PostResponseType = LoginResponseType & ResultResponseType & ResultsResponseType;
 
 const ajax = {
   get: (url: string, options?: RequestInit): Promise<GetResponseType> => {
