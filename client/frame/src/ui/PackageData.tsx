@@ -6,14 +6,24 @@ import { PackageType } from '../views/PackageView';
 interface PackageDataProps {
   pckg: PackageType|undefined,
   index: number|undefined,
-  withoutTests?: boolean
+  options? : {
+    withoutTests?: boolean,
+    isNameLink?: boolean
+  }
 }
 
-const PackageData: React.FC<PackageDataProps> = ({ pckg, index, withoutTests }) => {
+const PackageData: React.FC<PackageDataProps> = ({ pckg, index, options }) => {
   return (
     <Stack>
       <Stack>
-        <h1 style={styles.name}><Link><NavLink to={`/package/${index}`}>{pckg?.name}</NavLink></Link></h1>
+        <h1 style={styles.name}>
+          {options?.isNameLink ?
+            <Link>
+              <NavLink to={`/package/${index}`}>{pckg?.name}</NavLink>
+            </Link> :
+            <span>{pckg?.name}</span>
+          }
+        </h1>
         <h3>{pckg?.description}</h3>
       </Stack>
 
@@ -25,7 +35,7 @@ const PackageData: React.FC<PackageDataProps> = ({ pckg, index, withoutTests }) 
 
       <p>Maximum futási idő: {pckg?.timeout} ms</p>
 
-      {withoutTests ?
+      {options?.withoutTests ?
         null :
         <p>Tesztek száma: {pckg?.tests.length}</p>
       }

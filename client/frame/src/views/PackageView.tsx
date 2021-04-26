@@ -69,7 +69,7 @@ const PackageView: React.FC<PackageViewProps> = () => {
       setPckg(result);
       setLoading(false);
 
-      if (history.state) {
+      if (history.state?.state) {
         setTests(history.state.state.map(
           (testResult: ResultResponseType, i: number) => {
             const tmp = Object.assign({}, testResult);
@@ -141,7 +141,7 @@ const PackageView: React.FC<PackageViewProps> = () => {
 
   return (
     <Stack>
-      <PackageData pckg={pckg} index={parseInt(params.id)} withoutTests />
+      <PackageData pckg={pckg} index={parseInt(params.id)} options={{ withoutTests: true }} />
 
       {isLoading ? <Spinner /> : null}
 

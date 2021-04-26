@@ -41,7 +41,7 @@ const PackagesView: React.FC<PackagesProps> = () => {
 
   const onRenderCell = (pckg: PackageType|undefined, index: number|undefined): ReactNode => {
     return (
-      <PackageListItem pckg={pckg} index={index} selectPackageToRun={selectPackageToRun} />
+      <PackageListItem pckg={pckg} index={index} selectPackageToRun={selectPackageToRun} packageDataOptions={{ isNameLink: true }} />
     );
   };
 

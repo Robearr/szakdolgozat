@@ -1,4 +1,5 @@
 import { PackageType, TestType } from '../views/PackageView';
+import { StatisticType } from '../views/StatisticsView';
 
 type ErrorResponseType = {
   severity: string,
@@ -19,16 +20,14 @@ export type ResultResponseType = ErrorResponseType & ErrorResponseType[] & {
 export type ResultsResponseType = ResultResponseType[];
 
 export type StatisticResponseType = {
-  userId: number|null,
-  result: number,
-  testId: number|null
-  packageId: number|null
+  loggedIn: StatisticType[],
+  notLoggedIn: StatisticType[]
 };
 
 export type PackagesResponseType = ErrorResponseType & PackageType[] & PackageType;
 export type TestsResponseType = TestType[] & TestType;
 
-type GetResponseType = PackagesResponseType & TestsResponseType & StatisticResponseType[];
+type GetResponseType = PackagesResponseType & TestsResponseType & StatisticResponseType;
 type PostResponseType = LoginResponseType & ResultResponseType & ResultsResponseType;
 
 const ajax = {

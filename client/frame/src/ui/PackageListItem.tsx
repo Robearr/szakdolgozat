@@ -7,10 +7,14 @@ import PackageData from './PackageData';
 interface PackageListItemProps {
   index: number|undefined,
   pckg: PackageType|undefined,
-  selectPackageToRun: (index: number|undefined) => void
+  selectPackageToRun: (index: number|undefined) => void,
+  packageDataOptions?: {
+    withoutTests?: boolean,
+    isNameLink?: boolean
+  }
 }
 
-const PackageListItem: React.FC<PackageListItemProps> = ({ pckg, index, selectPackageToRun }) => {
+const PackageListItem: React.FC<PackageListItemProps> = ({ pckg, index, selectPackageToRun, packageDataOptions }) => {
   const [cookies, setCookies] = useCookies(['token']);
 
   const getDisabledMessage = () => {
@@ -29,7 +33,7 @@ const PackageListItem: React.FC<PackageListItemProps> = ({ pckg, index, selectPa
 
   return (
     <Stack style={styles.item}>
-      <PackageData pckg={pckg} index={index} />
+      <PackageData pckg={pckg} index={index} options={packageDataOptions}/>
 
       <DefaultButton
         text='Teszt futtatása'

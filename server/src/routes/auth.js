@@ -21,7 +21,7 @@ router
     const hashedPassword = md5.update(req.body.password).digest('hex');
 
     if (hashedPassword === user?.password) {
-      const token = jwt.sign({ id: user.id, isTeacher: user.isTeacher }, process.env.JWT_SECRET, { expiresIn: '30m' });
+      const token = jwt.sign({ id: user.id, isTeacher: user.isTeacher }, process.env.JWT_SECRET, { expiresIn: '3h' });
       req.session.token = token;
       req.session.user = user;
       res.send({ token });

@@ -1,4 +1,5 @@
 const express = require('express');
+const { Op } = require('sequelize');
 const router = express.Router();
 
 const Statistic = require('../models/Statistic');
@@ -13,7 +14,14 @@ router
       return;
     }
 
-    const statistics = await Statistic.findAll();
+    const statistics = {
+      loggedIn: {},
+      notLoggedIn: {}
+    };
+
+    statistics.loggedIn = await Statistic.findAll({ where: { [Op.not]: [ { userId: null } ] } });
+    statistics.notLoggedIn = await Statistic.findAll({ where: { userId: null } });
+
     res.send(statistics);
   })
   .get('/packages/:packageId', async (req, res) => {
