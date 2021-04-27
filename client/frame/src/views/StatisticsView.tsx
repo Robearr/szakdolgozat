@@ -1,17 +1,19 @@
 import { Stack } from '@fluentui/react';
 import { ChartData } from 'chart.js';
-import { reject, uniqBy } from 'lodash';
+import { max, reject, uniqBy } from 'lodash';
 import React, { CSSProperties, useContext, useEffect, useMemo, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { useCookies } from 'react-cookie';
 import { MessageBoxContext } from '../MessageBoxProvider';
 import ajax, { StatisticResponseType } from '../utils/ajax';
+import colors from '../utils/colors';
 
 interface StatisticsProps {}
 
 export type StatisticType = {
   result: number,
   userId: number|null,
+  userName: string|null,
   testId: number|null,
   packageId: number|null,
   createdAt: Date
@@ -44,35 +46,60 @@ const StatisticsView: React.FC<StatisticsProps> = () => {
   }, []);
 
   const createLoggedInData = (prop: keyof StatisticType): ChartData => {
-    const uniqValues = reject(uniqBy(statistics?.loggedIn, prop), (s) => s[prop] === null);
+    const users = uniqBy(statistics?.loggedIn, 'userId');
+    const neededProps: string[] = [];
 
-    const datasets = uniqValues.map(
-      (value) => ({
-        data: [value.result],
-        label: `${value[prop]}`
+    const values = users.map(
+      (user) => statistics?.loggedIn.filter(
+        (statistic) => statistic.userId === user.userId
+      ).map(
+        (statistic) => {
+          if (statistic[prop] !== null) {
+            neededProps.push(`${statistic[prop]}`);
+            return statistic.result;
+          }
+        }
+      )
+    );
+
+    const longestValueLength = max(values.map((value) => value?.length)) || 0;
+    const resultsByUser: number[][] = [];
+
+    for (let i = 0; i < longestValueLength; i++) {
+      for (let j = 0; j < users.length; j++) {
+        if (!resultsByUser[i]) {
+          resultsByUser[i] = [];
+        }
+        resultsByUser[i][j] = (values[j] || [])[i] || 0;
+      }
+    }
+
+    const datasets = resultsByUser.map(
+      (value, i) => ({
+        data: value,
+        label: neededProps[i],
+        backgroundColor: colors[i]
       })
     );
 
     return {
-      labels: uniqValues.map((value) => value[prop]),
+      labels: users.map((user) => `${user.userName ?? user[prop]}`),
       datasets
     };
 
   };
 
   const createNotLoggedInData = (prop: keyof StatisticType): ChartData => {
-    const uniqValues = reject(uniqBy(statistics?.notLoggedIn, prop), (s) => s[prop] === null);
-
-    const datasets = statistics?.notLoggedIn?.map(
-      (value) => ({
+    const datasets = reject(statistics?.notLoggedIn, (s) => s[prop] === null).map(
+      (value, i) => ({
         data: [value.result],
-        label: `${value[prop]}`
+        label: `${value[prop]}`,
+        backgroundColor: colors[i]
       })
     );
 
-
     return {
-      labels: uniqValues.map((value) => value[prop]),
+      labels: ['nem ismert felhasználók'],
       datasets: datasets || []
     };
   };
@@ -102,11 +129,11 @@ const StatisticsView: React.FC<StatisticsProps> = () => {
       <div>
         <div style={styles.chart}>
           <h2>Futtatott csomagok eredményei</h2>
-          <Bar type='bar' data={notLoggedInTestData} options={{ plugins: { legend: { display: false } } }}/>
+          <Bar type='bar' data={notLoggedInPackageData} options={{ plugins: { legend: { display: false } } }}/>
         </div>
         <div style={styles.chart}>
           <h2>Futtatott tesztek eredményei</h2>
-          <Bar type='bar' data={notLoggedInPackageData} options={{ plugins: { legend: { display: false } } }}/>
+          <Bar type='bar' data={notLoggedInTestData} options={{ plugins: { legend: { display: false } } }}/>
         </div>
       </div>
     </Stack>

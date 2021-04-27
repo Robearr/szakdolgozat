@@ -20,6 +20,9 @@ module.exports = {
           isNumeric: true
         }
       },
+      userName: {
+        type: Sequelize.STRING
+      },
       testId: {
         type: Sequelize.INTEGER,
         allowNull: !this.packageId,

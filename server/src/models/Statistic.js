@@ -16,6 +16,9 @@ const Statistic = sequelize.define('statistics', {
       isNumeric: true
     }
   },
+  userName: {
+    type: DataTypes.STRING
+  },
   testId: {
     type: DataTypes.INTEGER,
     allowNull: !this.packageId,

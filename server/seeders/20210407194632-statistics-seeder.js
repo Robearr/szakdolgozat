@@ -4,11 +4,13 @@ module.exports = {
       {
         result: 21,
         userId: 1,
+        userName: 'admin',
         packageId: 1
       },
       {
         result: 10,
         userId: 2,
+        userName: 'user',
         packageId: 1
       },
       {
@@ -22,6 +24,7 @@ module.exports = {
       {
         result: 3,
         userId: 1,
+        userName: 'admin',
         testId: 1
       }
     ], {});

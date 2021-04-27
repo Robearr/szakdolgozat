@@ -32,11 +32,16 @@ type PostResponseType = LoginResponseType & ResultResponseType & ResultsResponse
 
 const ajax = {
   get: (url: string, options?: RequestInit): Promise<GetResponseType> => {
+    const tempOptions = Object.assign({}, options);
+    const additionalHeaders = tempOptions?.headers;
+    delete tempOptions.headers;
+
     return fetch(`${process.env.REACT_APP_API_BASE_URL}/${url}`, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...additionalHeaders
       },
-      ...options
+      ...tempOptions
     }).then(
       (res) => res.json()
     ).catch(
@@ -44,13 +49,18 @@ const ajax = {
     );
   },
   post: (url: string, body: Record<string, unknown>, options?: RequestInit): Promise<PostResponseType> => {
+    const tempOptions = Object.assign({}, options);
+    const additionalHeaders = tempOptions?.headers;
+    delete tempOptions.headers;
+
     return fetch(`${process.env.REACT_APP_API_BASE_URL}/${url}`, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...additionalHeaders
       },
-      ...options
+      ...tempOptions
     }).then(
       (res) => res.json()
     ).catch(

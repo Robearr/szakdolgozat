@@ -1,5 +1,6 @@
 import { IButtonStyles, IconButton, mergeStyleSets, Modal, PrimaryButton, Spinner, TextField } from '@fluentui/react';
 import React, { CSSProperties, useContext, useState } from 'react';
+import { useCookies } from 'react-cookie';
 import { useHistory } from 'react-router';
 import { MessageBoxContext } from '../MessageBoxProvider';
 import ajax from '../utils/ajax';
@@ -17,6 +18,7 @@ const PackageRunnerModal: React.FC<PackageRunnerModalProps> = ({ isModalOpen, se
   const [url, setUrl] = useState<string>('');
   const history = useHistory();
 
+  const [cookies, setCookies] = useCookies(['token']);
   const { showMessage } = useContext(MessageBoxContext);
 
   const runPackage = async () => {
@@ -24,7 +26,11 @@ const PackageRunnerModal: React.FC<PackageRunnerModalProps> = ({ isModalOpen, se
 
     const result = await ajax.post(`packages/${selectedPackageId}/run`, {
       url
-    });
+    }, cookies.token ? {
+      headers: {
+        Authorization: `Bearer ${cookies.token}`
+      }
+    } : undefined);
 
     setSending(false);
 

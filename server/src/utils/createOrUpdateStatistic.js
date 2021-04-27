@@ -15,6 +15,7 @@ module.exports = async function(jsonwt, results, testOrPackageId) {
       await Statistic.create({
         result: points,
         userId: jsonwt.id,
+        userName: jsonwt.userName,
         ...testOrPackageId
       });
     } else if (points > statistic?.result) {

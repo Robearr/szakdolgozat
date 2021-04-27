@@ -1,5 +1,6 @@
 import { DefaultButton, DetailsList, IColumn, Selection, SelectionMode, Spinner, Stack, TextField } from '@fluentui/react';
 import React, { CSSProperties, useContext, useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 import { useParams } from 'react-router';
 import { MessageBoxContext } from '../MessageBoxProvider';
 import PackageData from '../ui/PackageData';
@@ -53,6 +54,7 @@ const PackageView: React.FC<PackageViewProps> = () => {
   const [isLoading, setLoading] = useState<boolean>(true);
 
   const params = useParams<ParamsProps>();
+  const [cookies, setCookies] = useCookies(['token']);
   const { showMessage } = useContext(MessageBoxContext);
 
   useEffect(() => {
@@ -76,8 +78,11 @@ const PackageView: React.FC<PackageViewProps> = () => {
             const gotPoints = tmp.points;
             delete tmp.points;
 
+            const originalTest = result.tests[i];
+            delete originalTest.customErrorMessage;
+
             return {
-              ...result.tests[i],
+              ...originalTest,
               ...testResult,
               result: gotPoints
             };
@@ -112,7 +117,11 @@ const PackageView: React.FC<PackageViewProps> = () => {
     const result = await ajax.post(`packages/${params.id}/run`, {
       url,
       tests: selectedIndices
-    });
+    }, cookies.token ? {
+      headers: {
+        Authorization: `Bearer ${cookies.token}`
+      }
+    } : undefined);
     setLoading(false);
 
     if (result.severity) {
