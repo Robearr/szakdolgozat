@@ -34,6 +34,7 @@ const LoginView: React.FC<LoginProps> = () => {
           result.messages.forEach(
             (message) => showMessage(result.severity, message)
           );
+          return;
         }
 
         const date = new Date();
