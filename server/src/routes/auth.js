@@ -24,7 +24,7 @@ router
       const token = jwt.sign({ id: user.id, isTeacher: user.isTeacher, userName: user.name }, process.env.JWT_SECRET, { expiresIn: '3h' });
       req.session.token = token;
       req.session.user = user;
-      res.send({ token });
+      res.send({ token, isTeacher: user.isTeacher });
       return;
     } else {
       res.send({

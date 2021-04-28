@@ -7,7 +7,8 @@ type ErrorResponseType = {
 };
 
 export type LoginResponseType = ErrorResponseType & {
-  token: string
+  token: string,
+  isTeacher: boolean
 };
 
 export type ResultResponseType = ErrorResponseType & ErrorResponseType[] & {

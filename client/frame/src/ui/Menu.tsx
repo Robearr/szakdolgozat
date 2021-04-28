@@ -11,7 +11,7 @@ interface MenuProps {}
 const Menu: React.FC<MenuProps> = ({ children }) => {
 
   const [packageLinks, setPackageLinks] = useState<INavLink[]>([]);
-  const [cookies, setCookies, removeCookies] = useCookies(['token']);
+  const [cookies, setCookies, removeCookies] = useCookies(['token', 'isTeacher']);
   const [navWidth, setNavWidth] = useState<number>(150);
   const history = useHistory();
   const { showMessage } = useContext(MessageBoxContext);
@@ -72,10 +72,12 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
       }]
     });
   } else {
-    groups[0].links.push({
-      name: 'Statisztikák',
-      url: '/statistics',
-    });
+    if (cookies.isTeacher === 'true') {
+      groups[0].links.push({
+        name: 'Statisztikák',
+        url: '/statistics',
+      });
+    }
 
     groups.push({
       links: [{

@@ -14,7 +14,7 @@ const LoginView: React.FC<LoginProps> = () => {
 
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [cookies, setCookies] = useCookies(['token']);
+  const [cookies, setCookies] = useCookies(['token', 'isTeacher']);
   const history = useHistory();
 
   const handleLogin = (e: React.MouseEvent<PrimaryButton>) => {
@@ -41,6 +41,9 @@ const LoginView: React.FC<LoginProps> = () => {
         date.setHours(date.getHours() + 2);
 
         setCookies('token', result.token, {
+          expires: date
+        });
+        setCookies('isTeacher', result.isTeacher, {
           expires: date
         });
         history.push('/');

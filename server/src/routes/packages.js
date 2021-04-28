@@ -170,8 +170,6 @@ router
       );
     }
 
-    console.log(req.body);
-    console.log(jsonwt);
     const results = await runner(tests, req.body.url, hooks);
 
     // statisztika beállítása

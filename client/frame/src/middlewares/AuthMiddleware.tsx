@@ -8,7 +8,7 @@ interface AuthMiddleWareProps {
 
 const AuthMiddleware: React.FC<AuthMiddleWareProps> = ({ isTeacherRoute, children }) => {
 
-  const [cookies, setCookies] = useCookies(['token']);
+  const [cookies, setCookies] = useCookies(['token', 'isTeacher']);
   const history = useHistory();
 
   useEffect(() => {
@@ -17,7 +17,9 @@ const AuthMiddleware: React.FC<AuthMiddleWareProps> = ({ isTeacherRoute, childre
     }
 
     if (isTeacherRoute) {
-      // TODO
+      if (cookies.isTeacher !== 'true') {
+        history.push('/login');
+      }
     }
 
   }, []);
