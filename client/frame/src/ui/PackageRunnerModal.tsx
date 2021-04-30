@@ -19,7 +19,7 @@ const PackageRunnerModal: React.FC<PackageRunnerModalProps> = ({ isModalOpen, se
   const history = useHistory();
 
   const [cookies, setCookies] = useCookies(['token']);
-  const { showMessage } = useContext(MessageBoxContext);
+  const { showMessages } = useContext(MessageBoxContext);
 
   const runPackage = async () => {
     setSending(true);
@@ -35,9 +35,9 @@ const PackageRunnerModal: React.FC<PackageRunnerModalProps> = ({ isModalOpen, se
     setSending(false);
 
     if (result?.severity || result[0].severity) {
-      (result.messages || result[0].messages).forEach(
-        (message) => showMessage(result.severity, message)
-      );
+      showMessages((result.messages || result[0].messages).map(
+        (message) => ({ severity: result.severity, messageText: message })
+      ));
       return;
     }
 

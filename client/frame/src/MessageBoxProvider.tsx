@@ -1,37 +1,48 @@
 import React, { createContext, useState } from 'react';
 
-type MessageProps = {
+export type MessageProps = {
   severity: string,
   messageText: string,
 };
 
 type MessageContextType = {
-  message: MessageProps,
-  showMessage: (severity: string, messageText: string) => void
+  messages: MessageProps[],
+  showMessages: (messages: MessageProps[]) => void,
+  removeMessage: (ind: number) => void
 }
 
-const defaultValue = {
-  severity: '',
-  messageText: '',
-};
+const defaultValue: MessageProps[] = [];
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-export const MessageBoxContext = createContext<MessageContextType>({ message: defaultValue, showMessage: function(severity: string, messageText: string) {} });
+export const MessageBoxContext = createContext<MessageContextType>({
+  messages: defaultValue,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  showMessages: function(messages: MessageProps[]) {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  removeMessage: function(ind: number) {}
+});
 
 interface MessageBoxProviderProps {}
 
 const MessageBoxProvider: React.FC<MessageBoxProviderProps> = ({ children }) => {
-  const [message, setMessage] = useState<MessageProps>(defaultValue);
+  const [messages, setMessages] = useState<MessageProps[]>(defaultValue);
 
-  const showMessage = (severity: string, messageText: string) => {
-    setMessage({
-      severity,
-      messageText
-    });
+  const showMessages = (messages: MessageProps[]) => {
+    setMessages(messages.map(
+      (message) => message
+    ));
+
+    setTimeout(() => {
+      setMessages([]);
+    }, 10000);
+
+  };
+
+  const removeMessage = (ind: number) => {
+    setMessages(messages.filter((message, i) => i !== ind));
   };
 
   return (
-    <MessageBoxContext.Provider value={{ message, showMessage }}>
+    <MessageBoxContext.Provider value={{ messages, showMessages, removeMessage }}>
       {children}
     </MessageBoxContext.Provider>
   );

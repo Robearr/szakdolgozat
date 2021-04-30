@@ -1,0 +1,12 @@
+@keyframes slide-up-anim {
+  0%, 100% {
+    transform: translateY(100%);
+  }
+  5%, 95% {
+    transform: translateY(0%);
+  }
+}
+
+.slide-up {
+  animation: slide-up-anim 10s ease-in-out alternate;
+}

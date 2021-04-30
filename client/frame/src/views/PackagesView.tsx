@@ -13,16 +13,16 @@ const PackagesView: React.FC<PackagesProps> = () => {
   const [isLoading, setLoading] = useState<boolean>(true);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedPackageId, setSelectedPackageId] = useState<number>();
-  const { showMessage } = useContext(MessageBoxContext);
+  const { showMessages } = useContext(MessageBoxContext);
 
   useEffect(() => {
     (async () => {
       const pckgs: PackagesResponseType = await ajax.get('packages');
 
       if (pckgs.severity) {
-        pckgs.messages.forEach(
-          (message: string) => showMessage(pckgs.severity, message)
-        );
+        showMessages(pckgs.messages.map(
+          (message) => ({ severity: pckgs.severity, messageText: message })
+        ));
         return;
       }
 

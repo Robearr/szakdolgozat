@@ -14,16 +14,16 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
   const [cookies, setCookies, removeCookies] = useCookies(['token', 'isTeacher']);
   const [navWidth, setNavWidth] = useState<number>(150);
   const history = useHistory();
-  const { showMessage } = useContext(MessageBoxContext);
+  const { showMessages } = useContext(MessageBoxContext);
 
   useEffect(() => {
     (async () => {
       const result = await ajax.get('packages');
 
       if (result.severity) {
-        result.messages.forEach(
-          (message: string) => showMessage(result.severity, message)
-        );
+        showMessages(result.messages.map(
+          (message) => ({ severity: result.severity, messageText: message })
+        ));
         return;
       }
 

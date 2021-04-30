@@ -55,16 +55,16 @@ const PackageView: React.FC<PackageViewProps> = () => {
 
   const params = useParams<ParamsProps>();
   const [cookies, setCookies] = useCookies(['token']);
-  const { showMessage } = useContext(MessageBoxContext);
+  const { showMessages } = useContext(MessageBoxContext);
 
   useEffect(() => {
     (async () => {
       const result = await ajax.get(`packages/${params.id}`);
 
       if (result.severity) {
-        result.messages.forEach(
-          (message: string) => showMessage(result.severity, message)
-        );
+        showMessages(result.messages.map(
+          (message) => ({ severity: result.severity, messageText: message })
+        ));
         return;
       }
 
@@ -125,9 +125,9 @@ const PackageView: React.FC<PackageViewProps> = () => {
     setLoading(false);
 
     if (result.severity) {
-      result.messages.forEach(
-        (message: string) => showMessage(result.severity, message)
-      );
+      showMessages(result.messages.map(
+        (message) => ({ severity: result.severity, messageText: message })
+      ));
       return;
     }
 

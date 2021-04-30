@@ -10,7 +10,7 @@ interface LoginProps {}
 
 const LoginView: React.FC<LoginProps> = () => {
 
-  const { showMessage } = useContext(MessageBoxContext);
+  const { showMessages } = useContext(MessageBoxContext);
 
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -21,7 +21,7 @@ const LoginView: React.FC<LoginProps> = () => {
     e.preventDefault();
 
     if (!process.env.REACT_APP_HASH_ALGORITHM) {
-      showMessage('ERROR', 'Nincs megadva hash algoritmus! Keresd fel az illetékes(eke)t!');
+      showMessages([{ severity: 'ERROR', messageText: 'Nincs megadva hash algoritmus! Keresd fel az illetékes(eke)t!' }]);
       return;
     }
 
@@ -31,9 +31,9 @@ const LoginView: React.FC<LoginProps> = () => {
     }).then(
       (result: LoginResponseType) => {
         if (result?.severity) {
-          result.messages.forEach(
-            (message) => showMessage(result.severity, message)
-          );
+          showMessages(result.messages.map(
+            (message) => ({ severity: result.severity, messageText: message })
+          ));
           return;
         }
 
