@@ -1,4 +1,4 @@
-import { DefaultButton, DetailsList, IColumn, Selection, SelectionMode, Spinner, Stack, TextField } from '@fluentui/react';
+import { DefaultButton, DetailsList, DetailsRow, IColumn, IDetailsRowProps, IRenderFunction, Selection, SelectionMode, Spinner, Stack, TextField } from '@fluentui/react';
 import React, { CSSProperties, useContext, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useParams } from 'react-router';
@@ -149,6 +149,19 @@ const PackageView: React.FC<PackageViewProps> = () => {
     setTests(testsCopy);
   };
 
+  const onRenderRow = (props: IDetailsRowProps): JSX.Element => {
+    let backgroundColor;
+
+    if (props.item.result === 0) {
+      backgroundColor = '#a80000';
+    } else if (props.item.result) {
+      console.log(props.item.result);
+      backgroundColor = '#107c10';
+    }
+
+    return <DetailsRow { ...props } styles={{ root: { backgroundColor, color: backgroundColor ? 'white' : 'black' } }}/>;
+  };
+
   return (
     <Stack>
       <PackageData pckg={pckg} index={parseInt(params.id)} options={{ withoutTests: true }} />
@@ -160,6 +173,7 @@ const PackageView: React.FC<PackageViewProps> = () => {
         columns={columns}
         selection={selection}
         selectionMode={SelectionMode.multiple}
+        onRenderRow={onRenderRow as IRenderFunction<IDetailsRowProps>}
       />
 
       <Stack style={styles.footer}>

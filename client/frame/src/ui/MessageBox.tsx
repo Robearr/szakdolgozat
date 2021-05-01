@@ -29,6 +29,7 @@ const MessageBox: React.FC<MessageBoxProps> = () => {
             messageBarType={getType(message)}
             onDismiss={() => removeMessage(i)}
             className={message ? 'slide-up' : ''}
+            styles={{ root: { zIndex: 99 } }}
             key={`message-${i}`}
           >
             <div style={styles.message}>{message.messageText}</div>
