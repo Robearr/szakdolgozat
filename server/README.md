@@ -48,7 +48,10 @@ Jelenleg 4 hook érhető el:
 
 Ezen típusok közül lehet választani létrehozásnál (vagy akár tetszés szerint bővíthető is), illetve egy `callbackPath` oszlopot is ki kell tölteni, hogy megfelelően működjön. Típus alapján a megadott időben fogja a `callbackPath` oszlopban eltárolt név alapján megkeresni a filet, és lefuttatni a benne lévő függvényt.
 
-_Erre is van példa a **hooks** táblában és **hooks/** mappában._
+**FONTOS!**
+A csomagok indexelése nullától kezdődik!
+
+_Erre is van példa a  **hooks/** mappában._
 
 # Tesztek
 A tesztek a hookokhoz hasonlóan működnek.

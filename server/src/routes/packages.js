@@ -8,8 +8,8 @@ const yaml = require('js-yaml');
 const config = readFileSync(CONFIG_PATH);
 
 const packages = yaml.load(config);
+const hooks = yaml.load(readFileSync(`${__dirname}/../hooks.yaml`));
 
-const Hook = require('../models/Hook');
 const runner = require('../runner');
 
 dotenv.config();
@@ -161,7 +161,9 @@ router
     }
 
     const packageTests = pckg.tests;
-    const hooks = await Hook.findAll({ where: { packageId: req.params.id }});
+    const filteredHooks = hooks.filter(
+      (hook) => `${hook.packageId}` === `${req.params.id}`
+    );
     let tests = packageTests;
 
     if (req.body.tests) {
@@ -170,7 +172,7 @@ router
       );
     }
 
-    const results = await runner(tests, req.body.url, hooks);
+    const results = await runner(tests, req.body.url, filteredHooks);
 
     // statisztika beállítása
 

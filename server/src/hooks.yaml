@@ -1,0 +1,9 @@
+- type: beforeTest
+  callbackPath: hooks/beforeTest.js
+  packageId: 0
+- type: afterTest
+  callbackPath: hooks/afterTest.js
+  packageId: 0
+- type: afterPackage
+  callbackPath: hooks/afterPackage.js
+  packageId: 0
