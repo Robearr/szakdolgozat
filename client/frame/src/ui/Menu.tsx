@@ -40,7 +40,7 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
   const navStyle: Partial<INavStyles> = {
     root: {
       width: navWidth,
-      height: '100vh',
+      height: '95vh',
       border: '1px solid #eee',
       overflowY: 'auto',
       float: 'left',
@@ -108,7 +108,7 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
       cursor: 'ew-resize',
       float: 'left',
       width: 6,
-      height: '100vh',
+      height: '95vh',
       userSelect: 'none',
     },
     rightSide: {

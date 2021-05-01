@@ -2,7 +2,7 @@ import React, { CSSProperties, useContext } from 'react';
 import { MessageBoxContext, MessageProps } from '../MessageBoxProvider';
 import { MessageBar, MessageBarType } from '@fluentui/react';
 
-import '../animations.css';
+import '../styles/animations.css';
 
 interface MessageBoxProps {}
 

@@ -5,6 +5,7 @@ import { useParams } from 'react-router';
 import { MessageBoxContext } from '../MessageBoxProvider';
 import PackageData from '../ui/PackageData';
 import ajax, { ResultResponseType } from '../utils/ajax';
+import runnerButtonDisabledProps from '../utils/runnerButtonDisabledProps';
 
 interface PackageViewProps {}
 
@@ -163,7 +164,13 @@ const PackageView: React.FC<PackageViewProps> = () => {
 
       <Stack style={styles.footer}>
         <TextField label='Tesztelendő url' style={{ width: '30vw' }} onChange={(e) => setUrl(e.currentTarget.value)}/>
-        <DefaultButton text='Tesztelés' style={{ width: '10vw' }} onClick={runTests} />
+        <DefaultButton
+          text='Tesztelés'
+          title={runnerButtonDisabledProps.getDisabledMessage(pckg, cookies.token)}
+          style={{ width: '10vw' }}
+          disabled={runnerButtonDisabledProps.isDisabled(pckg, cookies.token)}
+          onClick={runTests}
+        />
       </Stack>
 
     </Stack>

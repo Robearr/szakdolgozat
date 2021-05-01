@@ -1,4 +1,5 @@
-import { Link, Stack } from '@fluentui/react';
+import { Link, Stack, Text } from '@fluentui/react';
+import dayjs from 'dayjs';
 import React, { CSSProperties } from 'react';
 import { NavLink } from 'react-router-dom';
 import { PackageType } from '../views/PackageView';
@@ -13,6 +14,11 @@ interface PackageDataProps {
 }
 
 const PackageData: React.FC<PackageDataProps> = ({ pckg, index, options }) => {
+
+  const isAvailable = () => {
+    return dayjs(pckg?.availableFrom).isBefore(dayjs()) && dayjs(pckg?.availableTo).isAfter(dayjs());
+  };
+
   return (
     <Stack>
       <Stack>
@@ -26,19 +32,22 @@ const PackageData: React.FC<PackageDataProps> = ({ pckg, index, options }) => {
         </h1>
         <h3>{pckg?.description}</h3>
       </Stack>
+      <Stack>
+        <Text style={{ backgroundColor: pckg?.isActive ? '#107c10' : '#a80000', ...styles.status }}>{pckg?.isActive ? 'Aktív' : 'Nem elérhető'}</Text>
+        <Text style={{ backgroundColor: isAvailable() ? '#107c10' : '#a80000', ...styles.status }}>
+          Intervallum: {pckg?.availableFrom} - {pckg?.availableTo}
+        </Text>
 
-      <p style={{ backgroundColor: pckg?.isActive ? '#107c10' : '#a80000' }}>{pckg?.isActive ? 'Aktív' : 'Nem elérhető'}</p>
-      <p>Elérhető: {pckg?.availableFrom} - {pckg?.availableTo}</p>
+        <Text>{pckg?.ipMask ? 'Van' : 'Nincs'} IP mask</Text>
+        <Text>{pckg?.urlMask ? 'Van' : 'Nincs'} URL mask</Text>
 
-      <p>{pckg?.ipMask ? 'Van' : 'Nincs'} IP mask</p>
-      <p>{pckg?.urlMask ? 'Van' : 'Nincs'} URL mask</p>
+        <Text>Maximum futási idő: {pckg?.timeout} ms</Text>
 
-      <p>Maximum futási idő: {pckg?.timeout} ms</p>
-
-      {options?.withoutTests ?
-        null :
-        <p>Tesztek száma: {pckg?.tests.length}</p>
-      }
+        {options?.withoutTests ?
+          null :
+          <Text>Tesztek száma: {pckg?.tests.length}</Text>
+        }
+      </Stack>
     </Stack>
   );
 };
@@ -47,6 +56,11 @@ const styles: Record<string, CSSProperties> = {
   name: {
     fontVariant: 'small-caps',
     margin: 0,
+  },
+  status: {
+    color: 'white',
+    textAlign: 'center',
+    width: '20vw',
   }
 };
 
