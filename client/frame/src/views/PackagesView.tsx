@@ -1,5 +1,5 @@
-import { FocusZone, FocusZoneDirection, List, Spinner } from '@fluentui/react';
-import React, { ReactNode, useContext, useEffect, useState } from 'react';
+import { FocusZone, FocusZoneDirection, Spinner, Stack } from '@fluentui/react';
+import React, { CSSProperties, useContext, useEffect, useState } from 'react';
 import { MessageBoxContext } from '../MessageBoxProvider';
 import PackageListItem from '../ui/PackageListItem';
 import PackageRunnerModal from '../ui/PackageRunnerModal';
@@ -39,18 +39,25 @@ const PackagesView: React.FC<PackagesProps> = () => {
     }
   };
 
-  const onRenderCell = (pckg: PackageType|undefined, index: number|undefined): ReactNode => {
-    return (
-      <PackageListItem pckg={pckg} index={index} selectPackageToRun={selectPackageToRun} packageDataOptions={{ isNameLink: true }} />
-    );
-  };
-
-
   return (
     <div>
       {isLoading ? <Spinner /> : null}
       <FocusZone direction={FocusZoneDirection.vertical}>
-        <List items={packages} onRenderCell={onRenderCell}/>
+
+        <Stack style={styles.container}>
+          {packages.map(
+            (pckg, i) => (
+              <Stack key={`package-${i}`} style={styles.item}>
+                <PackageListItem
+                  pckg={pckg}
+                  index={i}
+                  selectPackageToRun={selectPackageToRun}
+                  packageDataOptions={{ isNameLink: true }}
+                />
+              </Stack>
+            )
+          )}
+        </Stack>
       </FocusZone>
 
       <PackageRunnerModal
@@ -62,6 +69,17 @@ const PackagesView: React.FC<PackagesProps> = () => {
 
     </div>
   );
+};
+
+const styles: Record<string, CSSProperties> = {
+  container: {
+    columnCount: 3,
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
+  item: {
+    width: '28vw'
+  }
 };
 
 export default PackagesView;

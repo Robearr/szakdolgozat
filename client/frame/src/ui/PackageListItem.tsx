@@ -1,7 +1,5 @@
-import { DefaultButton, Stack } from '@fluentui/react';
+import { Stack } from '@fluentui/react';
 import React, { CSSProperties } from 'react';
-import { useCookies } from 'react-cookie';
-import runnerButtonDisabledProps from '../utils/runnerButtonDisabledProps';
 import { PackageType } from '../views/PackageView';
 import PackageData from './PackageData';
 
@@ -16,20 +14,9 @@ interface PackageListItemProps {
 }
 
 const PackageListItem: React.FC<PackageListItemProps> = ({ pckg, index, selectPackageToRun, packageDataOptions }) => {
-  const [cookies, setCookies] = useCookies(['token']);
-
   return (
     <Stack style={styles.item}>
-      <PackageData pckg={pckg} index={index} options={packageDataOptions}/>
-
-      <DefaultButton
-        text='Teszt futtatása'
-        title={runnerButtonDisabledProps.getDisabledMessage(pckg, cookies.token)}
-        style={{ width: '10vw' }}
-        onClick={() => selectPackageToRun(index)}
-        disabled={runnerButtonDisabledProps.isDisabled(pckg, cookies.token)}
-      />
-
+      <PackageData pckg={pckg} index={index} options={packageDataOptions} selectPackageToRun={selectPackageToRun} />
     </Stack>
   );
 };
