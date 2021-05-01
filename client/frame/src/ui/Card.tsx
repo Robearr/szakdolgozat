@@ -54,7 +54,8 @@ const styles: Record<string, CSSProperties> = {
     boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
     display: 'flex',
     flexDirection: 'column',
-    minHeight: '45vh',
+    height: '50vh',
+    overflow: 'auto'
   },
   header: {
     alignSelf: 'center',

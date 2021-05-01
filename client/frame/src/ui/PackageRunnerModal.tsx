@@ -50,7 +50,7 @@ const PackageRunnerModal: React.FC<PackageRunnerModalProps> = ({ isModalOpen, se
       onDismiss={() => setModalOpen(false)}
       containerClassName={modalStyles.modal}
     >
-      <div className='header'>
+      <div>
         <IconButton
           iconProps={{ iconName: 'Cancel' }}
           onClick={() => setModalOpen(false)}
@@ -58,7 +58,9 @@ const PackageRunnerModal: React.FC<PackageRunnerModalProps> = ({ isModalOpen, se
         />
       </div>
       {isSending ? <Spinner /> : null}
-      <h1>{typeof selectedPackageId === 'number' && packages[selectedPackageId]?.name} futtatása</h1>
+      <div style={{ textAlign: 'center' }}>
+        <h1>{typeof selectedPackageId === 'number' && packages[selectedPackageId]?.name} futtatása</h1>
+      </div>
       <span>Kérlek add meg az url-t, amit tesztelni szeretnél a csomaggal:</span>
       <TextField placeholder='url' onChange={(e) => setUrl(e.currentTarget.value)} />
 

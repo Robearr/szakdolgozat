@@ -30,7 +30,7 @@ const PackageData: React.FC<PackageDataProps> = ({ pckg, index, selectPackageToR
         <h1 style={styles.name}>
           {options?.isNameLink ?
             <Link>
-              <NavLink to={`/package/${index}`}>{pckg?.name}</NavLink>
+              <NavLink to={`/package/${index}`} style={{ textDecoration: 'none' }} >{pckg?.name}</NavLink>
             </Link> :
             <span>{pckg?.name}</span>
           }
