@@ -44,11 +44,13 @@ describe('POST /auth/login', () => {
         .post('/auth/login')
         .send({
           name: 'test',
-          password: 'user'
+          password: '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'
         })
         .end((_, res) => {
-          expect(res.body).to.have.key('token');
+          console.log(res.body);
+          expect(res.body).to.contain.keys(['token', 'isTeacher']);
           expect(res.body.token).to.be.a('string');
+          expect(res.body.isTeacher).to.be.a('boolean');
           done();
         });
     });
