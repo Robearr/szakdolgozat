@@ -55,22 +55,53 @@
       points: 5
       packageId: 1
       callbackPath: tests/changeBackgroundColor.js
-- name: faasd
-  description: fasdfas
-  isActive: 412
+- name: Tesztcsomag 1
+  description: Filler tesztcsomag
+  isActive: false
   availableFrom: '2021-01-01'
-  availableTo: '2021-02-02'
-  needsAuth: 0
+  availableTo: '2021-12-12'
+  needsAuth: false
   ipMask: ''
   urlMask: ''
-  timeout: 5252345
+  timeout: 10000
   tests:
-    - name: Háttérszín változtatás2
-      timeout: 10000
-      customErrorMessage: Nem jó a háttérszín!
-      isCustomErrorMessageVisible: true
-      isErrorDescriptionVisible: false
-      isStackVisible: false
-      points: 5
-      packageId: 2
-      callbackPath: tests/changeBackgroundColor.js
+- name: Tesztcsomag 2
+  description: Filler tesztcsomag
+  isActive: true
+  availableFrom: '2021-01-01'
+  availableTo: '2021-01-02'
+  needsAuth: false
+  ipMask: ''
+  urlMask: ''
+  timeout: 10000
+  tests:
+- name: Tesztcsomag 3
+  description: Filler tesztcsomag
+  isActive: false
+  availableFrom: '2021-01-01'
+  availableTo: '2021-12-12'
+  needsAuth: false
+  ipMask: ''
+  urlMask: ''
+  timeout: 10000
+  tests:
+- name: Tesztcsomag 4
+  description: Filler tesztcsomag
+  isActive: false
+  availableFrom: '2021-01-01'
+  availableTo: '2021-12-12'
+  needsAuth: false
+  ipMask: ''
+  urlMask: ''
+  timeout: 10000
+  tests:
+- name: Tesztcsomag 5
+  description: Filler tesztcsomag
+  isActive: false
+  availableFrom: '2021-01-01'
+  availableTo: '2021-12-12'
+  needsAuth: false
+  ipMask: ''
+  urlMask: ''
+  timeout: 10000
+  tests:
