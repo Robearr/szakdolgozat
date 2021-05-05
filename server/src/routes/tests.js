@@ -81,7 +81,7 @@ router
       errorMessages.push('A callbackPath csak string lehet!');
     }
 
-    const testNames = packages.map((pckg) => pckg.tests).flat().map((test) => test.name);
+    const testNames = packages.map((pckg) => pckg.tests).flat().map((test) => test?.name);
 
     if (testNames.includes(req.body.name)) {
       errorMessages.push('A megadott tesztnév már létezik!');

@@ -176,6 +176,17 @@ describe('Package\'s tests', () => {
               points: 3,
               packageId: 1,
               callbackPath: 'tests/evenNumbersChecker.js'
+            },
+            {
+              name: 'Gomb click konzolra',
+              timeout: 10000,
+              customErrorMessage: 'Nem íródott ki a konzolra!',
+              isCustomErrorMessageVisible: true,
+              isErrorDescriptionVisible: false,
+              isStackVisible: false,
+              points: 5,
+              packageId: 1,
+              callbackPath: 'tests/buttonClicked.js'
             }
           ]);
           done();
@@ -450,10 +461,10 @@ describe('POST /packages', () => {
   });
 });
 
-describe('PUT /packages/2', () => {
+describe('PUT /packages/4', () => {
   it('should fail, because the user is not logged in', (done) => {
     chai.request(server)
-      .put('/packages/2')
+      .put('/packages/4')
       .send({})
       .end((_, res) => {
         expect(res.body.severity).to.equal('ERROR');
@@ -471,7 +482,7 @@ describe('PUT /packages/2', () => {
       .end((_, res) => {
         const token = res.body.token;
         chai.request(server)
-          .put('/packages/2')
+          .put('/packages/4')
           .set('Authorization', `Bearer ${token}`)
           .send({})
           .end((_, res) => {
@@ -481,7 +492,7 @@ describe('PUT /packages/2', () => {
       });
   });
 
-  it('should modify the third package', (done) => {
+  it('should modify the fourth package', (done) => {
     chai.request(server)
       .post('/auth/login')
       .send({
@@ -491,7 +502,7 @@ describe('PUT /packages/2', () => {
       .end((_, res) => {
         const token = res.body.token;
         chai.request(server)
-          .put('/packages/2')
+          .put('/packages/4')
           .set('Authorization', `Bearer ${token}`)
           .send({
             name: 'Modified test package'
@@ -505,10 +516,10 @@ describe('PUT /packages/2', () => {
 
 });
 
-describe('DELETE /packages/0', () => {
+describe('DELETE /packages/4', () => {
   it('should return a JWT error message', (done) => {
     chai.request(server)
-      .delete('/packages/0')
+      .delete('/packages/4')
       .end((_, res) => {
         expect(res.body.severity).to.equal('ERROR');
         done();
@@ -526,7 +537,7 @@ describe('DELETE /packages/0', () => {
         const token = res.body.token;
 
         chai.request(server)
-          .delete('/packages/0')
+          .delete('/packages/4')
           .set('Authorization', `Bearer ${token}`)
           .end((_, res) => {
             expect(res.body.severity).to.equal('ERROR');
@@ -535,7 +546,7 @@ describe('DELETE /packages/0', () => {
       });
   });
 
-  it('should delete the third package', (done) => {
+  it('should delete the fourth package', (done) => {
     chai.request(server)
       .post('/auth/login')
       .send({
@@ -546,10 +557,10 @@ describe('DELETE /packages/0', () => {
         const token = res.body.token;
 
         chai.request(server)
-          .delete('/packages/2')
+          .delete('/packages/4')
           .set('Authorization', `Bearer ${token}`)
           .end((_, res) => {
-            expect(res.body).to.have.lengthOf(2);
+            expect(res.body).to.have.lengthOf(4);
             done();
           });
       });

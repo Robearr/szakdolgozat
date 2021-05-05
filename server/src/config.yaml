@@ -37,9 +37,9 @@
       points: 5
       packageId: 1
       callbackPath: tests/buttonClicked.js
-    - name: Minden span szövege lecserélve
+    - name: Minden span sz<C3><B6>vege lecser<C3><A9>lve
       timeout: 10000
-      customErrorMessage: Nem lett lecserélve minden span szövege!
+      customErrorMessage: Nem lett lecser<C3><A9>lve minden span sz<C3><B6>vege!
       isCustomErrorMessageVisible: true
       isErrorDescriptionVisible: false
       isStackVisible: false
@@ -64,7 +64,7 @@
   ipMask: ''
   urlMask: ''
   timeout: 10000
-  tests:
+  tests: []
 - name: Tesztcsomag 2
   description: Filler tesztcsomag
   isActive: true
@@ -74,7 +74,7 @@
   ipMask: ''
   urlMask: ''
   timeout: 10000
-  tests:
+  tests: []
 - name: Tesztcsomag 3
   description: Filler tesztcsomag
   isActive: false
@@ -84,7 +84,7 @@
   ipMask: ''
   urlMask: ''
   timeout: 10000
-  tests:
+  tests: []
 - name: Tesztcsomag 4
   description: Filler tesztcsomag
   isActive: false
@@ -94,7 +94,7 @@
   ipMask: ''
   urlMask: ''
   timeout: 10000
-  tests:
+  tests: []
 - name: Tesztcsomag 5
   description: Filler tesztcsomag
   isActive: false
@@ -104,4 +104,4 @@
   ipMask: ''
   urlMask: ''
   timeout: 10000
-  tests:
+  tests: []

@@ -28,3 +28,42 @@
       points: 3
       packageId: 1
       callbackPath: tests/evenNumbersChecker.js
+    - name: Gomb click konzolra
+      timeout: 10000
+      customErrorMessage: Nem íródott ki a konzolra!
+      isCustomErrorMessageVisible: true
+      isErrorDescriptionVisible: false
+      isStackVisible: false
+      points: 5
+      packageId: 1
+      callbackPath: tests/buttonClicked.js
+- name: Tesztcsomag 1
+  description: Filler tesztcsomag
+  isActive: false
+  availableFrom: '2021-01-01'
+  availableTo: '2021-12-12'
+  needsAuth: false
+  ipMask: ''
+  urlMask: ''
+  timeout: 10000
+  tests: []
+- name: Tesztcsomag 2
+  description: Filler tesztcsomag
+  isActive: true
+  availableFrom: '2021-01-01'
+  availableTo: '2021-01-02'
+  needsAuth: false
+  ipMask: ''
+  urlMask: ''
+  timeout: 10000
+  tests: []
+- name: Tesztcsomag 3
+  description: Filler tesztcsomag
+  isActive: true
+  availableFrom: '2021-01-01'
+  availableTo: '2021-01-02'
+  needsAuth: true
+  ipMask: ''
+  urlMask: ''
+  timeout: 10000
+  tests: []

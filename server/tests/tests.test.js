@@ -19,7 +19,7 @@ describe('GET /tests', () => {
   });
 });
 
-describe('GET /tests//0', () => {
+describe('GET /tests/0', () => {
   it('should return the first package', (done) => {
     chai.request(server)
       .get('/tests/0')
@@ -370,10 +370,10 @@ describe('POST /tests', () => {
   });
 });
 
-describe('PUT /tests/2', () => {
+describe('PUT /tests/3', () => {
   it('should fail, because the user is not logged in', (done) => {
     chai.request(server)
-      .put('/tests/2')
+      .put('/tests/3')
       .send({})
       .end((_, res) => {
         expect(res.body.severity).to.equal('ERROR');
@@ -391,7 +391,7 @@ describe('PUT /tests/2', () => {
       .end((_, res) => {
         const token = res.body.token;
         chai.request(server)
-          .put('/tests/2')
+          .put('/tests/3')
           .set('Authorization', `Bearer ${token}`)
           .send({})
           .end((_, res) => {
@@ -411,7 +411,7 @@ describe('PUT /tests/2', () => {
       .end((_, res) => {
         const token = res.body.token;
         chai.request(server)
-          .put('/tests/2')
+          .put('/tests/3')
           .set('Authorization', `Bearer ${token}`)
           .send({
             name: 'Modified test'
@@ -424,10 +424,10 @@ describe('PUT /tests/2', () => {
   });
 });
 
-describe('DELETE /tests/2', () => {
+describe('DELETE /tests/3', () => {
   it('should return a JWT error message', (done) => {
     chai.request(server)
-      .delete('/tests/2')
+      .delete('/tests/3')
       .end((_, res) => {
         expect(res.body.severity).to.equal('ERROR');
         done();
@@ -445,7 +445,7 @@ describe('DELETE /tests/2', () => {
         const token = res.body.token;
 
         chai.request(server)
-          .delete('/tests/2')
+          .delete('/tests/3')
           .set('Authorization', `Bearer ${token}`)
           .end((_, res) => {
             expect(res.body.severity).to.equal('ERROR');
@@ -465,10 +465,10 @@ describe('DELETE /tests/2', () => {
         const token = res.body.token;
 
         chai.request(server)
-          .delete('/tests/2')
+          .delete('/tests/3')
           .set('Authorization', `Bearer ${token}`)
           .end((_, res) => {
-            expect(res.body[0].tests).to.have.lengthOf(2);
+            expect(res.body[0].tests).to.have.lengthOf(3);
             done();
           });
       });
