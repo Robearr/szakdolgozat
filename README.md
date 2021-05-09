@@ -7,7 +7,6 @@ Létre kell hozni egy **.env** file-t, a **.env.EXAMPLE** alapján.
 
 **.env** tartalma:
 - `JWT_SECRET`: bármilyen string. A JWT-hez szükséges titok.
-- `SESSION_SECRET`: bármilyen string. A session-höz szükséges titok.
 - `TEST_CLIENT_URL`: url string. A tesztek futtatásához szükséges kliens url-je.
 
 ### client
