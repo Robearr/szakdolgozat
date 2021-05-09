@@ -46,7 +46,7 @@ const ajax = {
     }).then(
       (res) => res.json()
     ).catch(
-      (err) => console.log(err)
+      () => ({ severity: 'ERROR', messages: ['Váratlan szerverhiba történt!'] })
     );
   },
   post: (url: string, body: Record<string, unknown>, options?: RequestInit): Promise<PostResponseType> => {
@@ -65,7 +65,7 @@ const ajax = {
     }).then(
       (res) => res.json()
     ).catch(
-      (err) => console.log(err)
+      () => ({ severity: 'ERROR', messages: ['Váratlan szerverhiba történt!'] })
     );
   }
 };

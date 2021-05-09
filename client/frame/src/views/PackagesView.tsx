@@ -18,6 +18,7 @@ const PackagesView: React.FC<PackagesProps> = () => {
   useEffect(() => {
     (async () => {
       const pckgs: PackagesResponseType = await ajax.get('packages');
+      setLoading(false);
 
       if (pckgs.severity) {
         showMessages(pckgs.messages.map(
@@ -27,7 +28,6 @@ const PackagesView: React.FC<PackagesProps> = () => {
       }
 
       setPackages(pckgs);
-      setLoading(false);
     })();
   }, []);
 

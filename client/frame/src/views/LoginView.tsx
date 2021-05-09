@@ -1,4 +1,4 @@
-import { PrimaryButton, Stack, TextField } from '@fluentui/react';
+import { PrimaryButton, Spinner, Stack, TextField } from '@fluentui/react';
 import React, { useContext, useState } from 'react';
 import { MessageBoxContext } from '../MessageBoxProvider';
 import ajax, { LoginResponseType } from '../utils/ajax';
@@ -15,6 +15,8 @@ const LoginView: React.FC<LoginProps> = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [cookies, setCookies] = useCookies(['token', 'isTeacher']);
+  const [isLoading, setLoading] = useState<boolean>(false);
+
   const history = useHistory();
 
   const handleLogin = (e: React.MouseEvent<PrimaryButton>) => {
@@ -24,12 +26,15 @@ const LoginView: React.FC<LoginProps> = () => {
       showMessages([{ severity: 'ERROR', messageText: 'Nincs megadva hash algoritmus! Keresd fel az illetékes(eke)t!' }]);
       return;
     }
+    setLoading(true);
 
     ajax.post('auth/login', {
       name: username,
       password: crypto.createHash(process.env.REACT_APP_HASH_ALGORITHM).update(password).digest('hex')
     }).then(
       (result: LoginResponseType) => {
+        setLoading(false);
+
         if (result?.severity) {
           showMessages(result.messages.map(
             (message) => ({ severity: result.severity, messageText: message })
@@ -53,10 +58,11 @@ const LoginView: React.FC<LoginProps> = () => {
 
   return (
     <Stack horizontalAlign='center' verticalAlign='center'>
+      {isLoading ? <Spinner /> : null}
       <form>
         <TextField label='Felhasználónév' onChange={(e) => setUsername(e.currentTarget.value)}/>
         <TextField type='password' canRevealPassword label='Jelszó' onChange={(e) => setPassword(e.currentTarget.value)}/>
-        <PrimaryButton text='Belépés' onClick={handleLogin} />
+        <PrimaryButton text='Belépés' style={{ marginTop: '1vh' }} onClick={handleLogin} />
       </form>
     </Stack>
   );
