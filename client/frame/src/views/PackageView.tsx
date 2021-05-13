@@ -125,9 +125,9 @@ const PackageView: React.FC<PackageViewProps> = () => {
     } : undefined);
     setLoading(false);
 
-    if (result.severity) {
-      showMessages(result.messages.map(
-        (message) => ({ severity: result.severity, messageText: message })
+    if (result.severity || (result.length && result[0].severity)) {
+      showMessages((result.length ? result[0].messages : result.messages).map(
+        (message) => ({ severity: result.length ? result[0].severity : result.severity, messageText: message })
       ));
       return;
     }
@@ -155,7 +155,6 @@ const PackageView: React.FC<PackageViewProps> = () => {
     if (props.item.result === 0) {
       backgroundColor = '#a80000';
     } else if (props.item.result) {
-      console.log(props.item.result);
       backgroundColor = '#107c10';
     }
 

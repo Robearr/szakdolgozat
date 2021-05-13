@@ -2,7 +2,7 @@ import { IButtonStyles, IconButton, mergeStyleSets, Modal, PrimaryButton, Spinne
 import React, { CSSProperties, useContext, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useHistory } from 'react-router';
-import { MessageBoxContext } from '../MessageBoxProvider';
+import { MessageBoxContext, MessageProps } from '../MessageBoxProvider';
 import ajax from '../utils/ajax';
 import { PackageType } from '../views/PackageView';
 
@@ -34,11 +34,25 @@ const PackageRunnerModal: React.FC<PackageRunnerModalProps> = ({ isModalOpen, se
 
     setSending(false);
 
-    if (result?.severity || result[0].severity) {
-      showMessages((result.messages || result[0].messages).map(
+    if (result?.severity) {
+      showMessages(result.messages.map(
         (message) => ({ severity: result.severity, messageText: message })
       ));
       return;
+    }
+
+    if (result.length) {
+      const errorMessages = result.filter((r) => r.severity);
+      const formattedMessages: MessageProps[] = [];
+      errorMessages.forEach(
+        (errMsg) => errMsg.messages.map(
+          (msg) => {
+            formattedMessages.push({ severity: errMsg.severity, messageText: msg });
+          }
+        )
+      );
+
+      showMessages(formattedMessages);
     }
 
     history.push(`/package/${selectedPackageId}`, result);

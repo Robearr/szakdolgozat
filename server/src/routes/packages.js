@@ -161,7 +161,7 @@ router
     }
 
     const packageTests = pckg.tests;
-    const filteredHooks = hooks.filter(
+    const filteredHooks = hooks?.filter(
       (hook) => `${hook.packageId}` === `${req.params.id}`
     );
     let tests = packageTests;
@@ -176,14 +176,16 @@ router
 
     // statisztika beállítása
 
-    if (!req.body.tests) {
-      createOrUpdateStatistic(jsonwt, results, { packageId: req.params.id });
-    } else {
-      req.body.tests.forEach(
-        (test, i) => {
-          createOrUpdateStatistic(jsonwt, [results[i]], { testId: test });
-        }
-      );
+    if (results.length && !results[0].severity) {
+      if (!req.body.tests) {
+        createOrUpdateStatistic(jsonwt, results, { packageId: req.params.id });
+      } else {
+        req.body.tests.forEach(
+          (test, i) => {
+            createOrUpdateStatistic(jsonwt, [results[i]], { testId: test });
+          }
+        );
+      }
     }
 
     res.send(results);

@@ -11,7 +11,7 @@
   timeout: 10000
   tests:
     - name: Négyzet számolása
-      timeout: 10000
+      timeout: 1
       customErrorMessage: Nem jók a négyzetszámok!
       isCustomErrorMessageVisible: true
       isErrorDescriptionVisible: true
@@ -37,9 +37,9 @@
       points: 5
       packageId: 1
       callbackPath: tests/buttonClicked.js
-    - name: Minden span sz<C3><B6>vege lecser<C3><A9>lve
+    - name: Minden span szövege lecserélve
       timeout: 10000
-      customErrorMessage: Nem lett lecser<C3><A9>lve minden span sz<C3><B6>vege!
+      customErrorMessage: Nem lett lecserélve minden span szövege!
       isCustomErrorMessageVisible: true
       isErrorDescriptionVisible: false
       isStackVisible: false
