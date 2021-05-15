@@ -22,6 +22,7 @@
   },
   "scripts": {
     "init-db": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "install-chromium": "node ./node_modules/playwright/install.js",
     "test": "set NODE_ENV=test&& mocha tests --timeout 20000 --exit",
     "start": "node ./src/server.js"
   }
